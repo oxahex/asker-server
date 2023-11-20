@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include:
+      - secret
+    group:
+      develop:
+        - domain
+      production:
+        - domain
+
+    active: develop
