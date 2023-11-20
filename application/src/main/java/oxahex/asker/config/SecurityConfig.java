@@ -1,4 +1,4 @@
-package oxahex.asker.configuration;
+package oxahex.asker.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
