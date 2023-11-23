@@ -46,21 +46,19 @@ public class Ask {
 
   @CreatedDate
   @Column(name = "created_date", nullable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @Builder
   public Ask(
       Long id,
       User askUser,
       String contents,
-      AskType askType,
-      LocalDateTime createdDate
+      AskType askType
   ) {
 
     this.id = id;
     this.askUser = askUser;
     this.contents = contents;
     this.askType = askType;
-    this.createdDate = createdDate;
   }
 }

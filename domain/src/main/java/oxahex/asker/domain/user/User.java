@@ -48,11 +48,11 @@ public class User {
 
   @CreatedDate
   @Column(name = "created_date", nullable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @LastModifiedDate
   @Column(name = "modified_date")
-  private LocalDateTime modifiedDate;
+  private LocalDateTime modifiedDateTime;
 
   @Builder
   public User(
@@ -61,9 +61,7 @@ public class User {
       String email,
       String password,
       RoleType role,
-      String jwtToken,
-      LocalDateTime createdDate,
-      LocalDateTime modifiedDate) {
+      String jwtToken) {
 
     this.id = id;
     this.name = name;
@@ -71,7 +69,5 @@ public class User {
     this.password = password;
     this.role = role;
     this.jwtToken = jwtToken;
-    this.createdDate = createdDate;
-    this.modifiedDate = modifiedDate;
   }
 }

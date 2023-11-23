@@ -47,27 +47,23 @@ public class Answer {
 
   @CreatedDate
   @Column(name = "created_date", nullable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @LastModifiedDate
   @Column(name = "modified_date")
-  private LocalDateTime modifiedDate;
+  private LocalDateTime modifiedDateTime;
 
   @Builder
   public Answer(
       Long id,
       User answerUser,
       Ask ask,
-      String contents,
-      LocalDateTime createdDate,
-      LocalDateTime modifiedDate
+      String contents
   ) {
 
     this.id = id;
     this.answerUser = answerUser;
     this.ask = ask;
     this.contents = contents;
-    this.createdDate = createdDate;
-    this.modifiedDate = modifiedDate;
   }
 }
