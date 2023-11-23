@@ -48,11 +48,11 @@ public class User {
 
   @CreatedDate
   @Column(name = "created_date", nullable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @LastModifiedDate
   @Column(name = "modified_date")
-  private LocalDateTime modifiedDate;
+  private LocalDateTime modifiedDateTime;
 
   @Builder
   public User(

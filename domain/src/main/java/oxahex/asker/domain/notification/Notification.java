@@ -47,11 +47,11 @@ public class Notification {
   private NotificationAttribute attribute;
 
   @Column(name = "read_date")
-  private LocalDateTime readDate;
+  private LocalDateTime readDateTime;
 
   @CreatedDate
   @Column(name = "created_date", nullable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @Builder
   public Notification(
@@ -59,12 +59,12 @@ public class Notification {
       User receiveUser,
       NotificationType type,
       NotificationAttribute attribute,
-      LocalDateTime readDate
+      LocalDateTime readDateTime
   ) {
     this.id = id;
     this.receiveUser = receiveUser;
     this.type = type;
     this.attribute = attribute;
-    this.readDate = readDate;
+    this.readDateTime = readDateTime;
   }
 }

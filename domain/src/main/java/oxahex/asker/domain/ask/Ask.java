@@ -46,7 +46,7 @@ public class Ask {
 
   @CreatedDate
   @Column(name = "created_date", nullable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @Builder
   public Ask(
