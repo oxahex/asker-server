@@ -1,1 +1,5 @@
 rootProject.name = 'asker-server'
+include 'application'
+include 'domain'
+include 'event'
+
