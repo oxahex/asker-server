@@ -1,8 +1,8 @@
 package oxahex.asker.domain.notification;
 
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -15,10 +15,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import oxahex.asker.domain.user.User;
@@ -43,8 +45,9 @@ public class Notification {
   @Column(name = "type")
   private NotificationType type;
 
-  @Convert(converter = NotificationAttributeConverter.class)
-  private NotificationAttribute attribute;
+  @Type(JsonType.class)
+  @Column(name = "messages", columnDefinition = "json", nullable = false)
+  private Map<String, String> messages;
 
   @Column(name = "read_date")
   private LocalDateTime readDateTime;
@@ -58,13 +61,13 @@ public class Notification {
       Long id,
       User receiveUser,
       NotificationType type,
-      NotificationAttribute attribute,
+      Map<String, String> messages,
       LocalDateTime readDateTime
   ) {
     this.id = id;
     this.receiveUser = receiveUser;
     this.type = type;
-    this.attribute = attribute;
+    this.messages = messages;
     this.readDateTime = readDateTime;
   }
 }
