@@ -61,9 +61,7 @@ public class User {
       String email,
       String password,
       RoleType role,
-      String jwtToken,
-      LocalDateTime createdDate,
-      LocalDateTime modifiedDate) {
+      String jwtToken) {
 
     this.id = id;
     this.name = name;
@@ -71,7 +69,5 @@ public class User {
     this.password = password;
     this.role = role;
     this.jwtToken = jwtToken;
-    this.createdDate = createdDate;
-    this.modifiedDate = modifiedDate;
   }
 }

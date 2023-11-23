@@ -59,14 +59,12 @@ public class Notification {
       User receiveUser,
       NotificationType type,
       NotificationAttribute attribute,
-      LocalDateTime readDate,
-      LocalDateTime createdDate
+      LocalDateTime readDate
   ) {
     this.id = id;
     this.receiveUser = receiveUser;
     this.type = type;
     this.attribute = attribute;
     this.readDate = readDate;
-    this.createdDate = createdDate;
   }
 }

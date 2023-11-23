@@ -58,16 +58,12 @@ public class Answer {
       Long id,
       User answerUser,
       Ask ask,
-      String contents,
-      LocalDateTime createdDate,
-      LocalDateTime modifiedDate
+      String contents
   ) {
 
     this.id = id;
     this.answerUser = answerUser;
     this.ask = ask;
     this.contents = contents;
-    this.createdDate = createdDate;
-    this.modifiedDate = modifiedDate;
   }
 }

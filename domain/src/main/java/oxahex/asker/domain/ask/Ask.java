@@ -53,14 +53,12 @@ public class Ask {
       Long id,
       User askUser,
       String contents,
-      AskType askType,
-      LocalDateTime createdDate
+      AskType askType
   ) {
 
     this.id = id;
     this.askUser = askUser;
     this.contents = contents;
     this.askType = askType;
-    this.createdDate = createdDate;
   }
 }
