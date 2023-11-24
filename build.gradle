@@ -79,8 +79,8 @@ project(":domain") {
 		api 'org.springframework.boot:spring-boot-starter-data-jpa'
 		api 'org.springframework.boot:spring-boot-starter-data-redis'
 
-		implementation 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.1'
-		implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
+//		implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
+		implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
 
 		runtimeOnly 'com.mysql:mysql-connector-j'
 		//	runtimeOnly 'com.h2database:h2'
