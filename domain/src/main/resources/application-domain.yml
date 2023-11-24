@@ -1,0 +1,55 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    generate-ddl: false
+    show-sql: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: develop
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    generate-ddl: true
+    show-sql: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3308/asker?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  output:
+    ansi:
+      enabled: always
+
+  data:
+    redis:
+      host: localhost
+      port: 6380
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  datasource:
+    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.db.name}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: ${rds.username}
+    password: ${rds.password}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+
+  data:
+    redis:
+      host: localhost
+      port: 6380
+
