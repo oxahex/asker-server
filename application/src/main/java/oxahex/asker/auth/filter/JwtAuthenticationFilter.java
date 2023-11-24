@@ -26,7 +26,7 @@ import oxahex.asker.utils.ResponseUtil;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private static final String HEADER = "Authorization";
-  private static final String LOGIN_PATH = "/auth/login";
+  private static final String LOGIN_PATH = "/auth/api/login";
 
   public JwtAuthenticationFilter(
       AuthenticationManager authenticationManager
