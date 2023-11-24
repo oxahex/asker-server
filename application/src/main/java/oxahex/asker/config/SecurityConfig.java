@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.auth.AuthService;
 import oxahex.asker.auth.filter.JwtAuthenticationFilter;
+import oxahex.asker.auth.filter.JwtFilter;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.error.handler.AuthenticationExceptionHandler;
@@ -53,7 +54,7 @@ public class SecurityConfig {
 
     http
         .authorizeHttpRequests(request -> {
-          request.requestMatchers("/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
+          request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
           request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 질문하기
           request.requestMatchers(HttpMethod.GET, "/api/answers/**").permitAll(); // 답변 조회
 
@@ -111,6 +112,7 @@ public class SecurityConfig {
       AuthenticationManager authenticationManager = builder.getSharedObject(
           AuthenticationManager.class);
       builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+      builder.addFilterBefore(new JwtFilter(), JwtAuthenticationFilter.class);
       super.configure(builder);
     }
   }
