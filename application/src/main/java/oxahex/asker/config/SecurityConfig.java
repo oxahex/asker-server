@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.auth.AuthService;
+import oxahex.asker.auth.filter.JwtAuthenticationFilter;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.error.handler.AuthenticationExceptionHandler;
@@ -61,6 +62,8 @@ public class SecurityConfig {
           request.anyRequest().authenticated();
         });
 
+    http.apply(new CustomSecurityFilterManager());
+
     http
         .exceptionHandling(exceptionHandler -> {
           exceptionHandler.authenticationEntryPoint(
@@ -98,5 +101,17 @@ public class SecurityConfig {
     provider.setUserDetailsService(authService);
     provider.setPasswordEncoder(passwordEncoder);
     return new ProviderManager(provider);
+  }
+
+  public static class CustomSecurityFilterManager extends
+      AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+
+    @Override
+    public void configure(HttpSecurity builder) throws Exception {
+      AuthenticationManager authenticationManager = builder.getSharedObject(
+          AuthenticationManager.class);
+      builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+      super.configure(builder);
+    }
   }
 }
