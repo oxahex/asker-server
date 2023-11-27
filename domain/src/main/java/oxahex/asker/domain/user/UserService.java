@@ -78,9 +78,7 @@ public class UserService {
    */
   private void validateCreateUser(String email) {
 
-    boolean exist = userRepository.existsByEmail(email);
-
-    if (exist) {
+    if (userRepository.existsByEmail(email)) {
       throw new UserException(UserError.ALREADY_EXIST_EMAIL);
     }
   }
