@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.domain.user.UserRepository;
-import oxahex.asker.dto.user.UserReqDto.JoinReqDto;
+import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
 import oxahex.asker.mock.MockUser;
 
 @AutoConfigureMockMvc

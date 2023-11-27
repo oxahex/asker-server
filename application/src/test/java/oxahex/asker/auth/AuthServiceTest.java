@@ -16,9 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserService;
-import oxahex.asker.dto.user.UserReqDto;
-import oxahex.asker.dto.user.UserReqDto.JoinReqDto;
-import oxahex.asker.dto.user.UserResDto.JoinResDto;
+import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
+import oxahex.asker.dto.auth.JoinDto.JoinResDto;
 import oxahex.asker.mock.MockUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +37,7 @@ class AuthServiceTest extends MockUser {
   public void join_success() throws Exception {
 
     // given
-    UserReqDto.JoinReqDto joinReqDto = new JoinReqDto();
+    JoinReqDto joinReqDto = new JoinReqDto();
     joinReqDto.setName("test");
     joinReqDto.setEmail("test@gmail.com");
     joinReqDto.setPassword("1234567890");
@@ -48,11 +47,11 @@ class AuthServiceTest extends MockUser {
     given(userService.createUser(any(), any(), any())).willReturn(createdUser);
 
     // when
-    JoinResDto joinUser = authService.join(joinReqDto);
+    JoinResDto joinResDto = authService.join(joinReqDto);
 
     // then: name, email role
-    Assertions.assertEquals(joinReqDto.getName(), createdUser.getName());
-    Assertions.assertEquals(joinReqDto.getEmail(), createdUser.getEmail());
-    Assertions.assertEquals(RoleType.USER, createdUser.getRole());
+    Assertions.assertEquals(joinReqDto.getName(), joinResDto.getName());
+    Assertions.assertEquals(joinReqDto.getEmail(), joinResDto.getEmail());
+    Assertions.assertEquals(RoleType.USER, joinResDto.getRole());
   }
 }

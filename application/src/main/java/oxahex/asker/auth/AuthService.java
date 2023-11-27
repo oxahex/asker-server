@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserService;
-import oxahex.asker.dto.user.UserReqDto.JoinReqDto;
-import oxahex.asker.dto.user.UserResDto.JoinResDto;
+import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
+import oxahex.asker.dto.auth.JoinDto.JoinResDto;
 
 @Slf4j
 @Service

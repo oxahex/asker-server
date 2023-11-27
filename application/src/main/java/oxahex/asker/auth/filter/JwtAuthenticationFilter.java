@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.auth.jwt.JwtTokenProvider;
 import oxahex.asker.auth.jwt.TokenType;
-import oxahex.asker.dto.user.UserReqDto.LoginReqDto;
-import oxahex.asker.dto.user.UserResDto.LoginResDto;
+import oxahex.asker.dto.auth.LoginDto.LoginReqDto;
+import oxahex.asker.dto.auth.LoginDto.LoginResDto;
 import oxahex.asker.error.exception.AuthException;
 import oxahex.asker.error.type.AuthError;
 import oxahex.asker.utils.ResponseUtil;

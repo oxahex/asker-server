@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.dto.ResponseDto;
-import oxahex.asker.dto.user.UserReqDto;
-import oxahex.asker.dto.user.UserResDto.JoinResDto;
+import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
+import oxahex.asker.dto.auth.JoinDto.JoinResDto;
 
 @Slf4j
 @RestController
@@ -24,7 +24,7 @@ public class AuthController {
 
   @PostMapping("/join")
   public ResponseEntity<ResponseDto<JoinResDto>> join(
-      @RequestBody @Valid UserReqDto.JoinReqDto joinReqDto,
+      @RequestBody @Valid JoinReqDto joinReqDto,
       BindingResult bindingResult
   ) {
 
