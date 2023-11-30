@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   private static final String[] EXCLUDE_PATH = {
       "/api/auth/join", "/api/auth/login", "/api/auth/logout", "/api/asks"
