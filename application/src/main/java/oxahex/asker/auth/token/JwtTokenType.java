@@ -1,11 +1,11 @@
-package oxahex.asker.auth.jwt;
+package oxahex.asker.auth.token;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum TokenType {
+public enum JwtTokenType {
 
   ACCESS_TOKEN(1000 * 60 * 60),               // 1 hour
   REFRESH_TOKEN(1000 * 60 * 60 * 24),         // 24 hour

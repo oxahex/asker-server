@@ -1,4 +1,4 @@
-package oxahex.asker.auth.jwt;
+package oxahex.asker.auth.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -29,7 +29,7 @@ public class JwtTokenProvider {
    * @param tokenType 생성할 토큰 타입(ACCESS_TOKEN, REFRESH_TOKEN)
    * @return JWT Token
    */
-  public static String create(AuthUser authUser, TokenType tokenType) {
+  public static String create(AuthUser authUser, JwtTokenType tokenType) {
 
     log.info("[JWT {} 발급] email={}", tokenType.name(), authUser.getUsername());
 
@@ -44,7 +44,7 @@ public class JwtTokenProvider {
         .withClaim(KEY_ROLE, authUser.getUser().getRole().name())
         .sign(Algorithm.HMAC512(JWT_TOKEN_KEY));
 
-    if (tokenType == TokenType.REFRESH_TOKEN) {
+    if (tokenType == JwtTokenType.REFRESH_TOKEN) {
       // TODO: Redis 저장
     }
 

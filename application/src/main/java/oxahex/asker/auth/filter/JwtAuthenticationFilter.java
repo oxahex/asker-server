@@ -14,8 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import oxahex.asker.auth.AuthUser;
-import oxahex.asker.auth.jwt.JwtTokenProvider;
-import oxahex.asker.auth.jwt.TokenType;
+import oxahex.asker.auth.token.JwtTokenProvider;
+import oxahex.asker.auth.token.JwtTokenType;
 import oxahex.asker.dto.auth.LoginDto.LoginReqDto;
 import oxahex.asker.dto.auth.LoginDto.LoginResDto;
 import oxahex.asker.error.exception.AuthException;
@@ -88,7 +88,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         request.getRequestURI());
 
     AuthUser authUser = (AuthUser) authResult.getPrincipal();
-    String accessToken = JwtTokenProvider.create(authUser, TokenType.ACCESS_TOKEN);
+    String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
     // TODO: Refresh Token 처리
 
     response.addHeader(HEADER, accessToken);
