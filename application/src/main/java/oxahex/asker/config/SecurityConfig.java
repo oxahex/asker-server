@@ -29,7 +29,6 @@ import oxahex.asker.error.handler.AuthenticationExceptionHandler;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
