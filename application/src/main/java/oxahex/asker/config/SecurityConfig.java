@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -43,7 +44,7 @@ public class SecurityConfig {
     log.debug("[SecurityFilterChain] Bean 등록");
 
     http
-//        .headers()  TODO: iframe 비허용 처리
+        .headers(HeadersConfigurer::disable) // iframe 비허용 처리
         .csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS
         .httpBasic(AbstractHttpConfigurer::disable)   // 브라우저 팝업 인증 비허용
@@ -54,13 +55,17 @@ public class SecurityConfig {
 
     http
         .authorizeHttpRequests(request -> {
+
           request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
           request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 질문하기
           request.requestMatchers(HttpMethod.GET, "/api/answers/**").permitAll(); // 답변 조회
 
-          request.requestMatchers("/api/users/**").hasRole(RoleType.USER.name()); // 회원 개인 정보 관련
+          request.requestMatchers("/api/users/**")
+              .hasAuthority(RoleType.USER.name()); // 회원 개인 정보 관련
+          request.requestMatchers("/api/admin/**")
+              .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
 
-          request.anyRequest().authenticated();
+          request.anyRequest().permitAll();
         });
 
     http.apply(new CustomSecurityFilterManager());
@@ -108,12 +113,12 @@ public class SecurityConfig {
       AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
 
     @Override
-    public void configure(HttpSecurity builder) throws Exception {
-      AuthenticationManager authenticationManager = builder.getSharedObject(
+    public void configure(HttpSecurity http) throws Exception {
+      AuthenticationManager authenticationManager = http.getSharedObject(
           AuthenticationManager.class);
-      builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
-      builder.addFilterBefore(new JwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-      super.configure(builder);
+      http.addFilter(new JwtAuthenticationFilter(authenticationManager));
+      http.addFilter(new JwtAuthorizationFilter(authenticationManager));
+      super.configure(http);
     }
   }
 }

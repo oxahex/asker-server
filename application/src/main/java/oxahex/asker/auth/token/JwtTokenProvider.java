@@ -64,9 +64,16 @@ public class JwtTokenProvider {
         JWT.require(Algorithm.HMAC512(JWT_TOKEN_KEY)).build().verify(token);
 
     Long id = decodedJWT.getClaim(KEY_ID).asLong();
+    String email = decodedJWT.getSubject();
     String role = decodedJWT.getClaim(KEY_ROLE).asString();
 
-    User user = User.builder().id(id).role(RoleType.valueOf(role)).build();
+    User user = User.builder()
+        .id(id)
+        .email(email)
+        .role(RoleType.valueOf(role))
+        .build();
+
+    log.info("role={}", user.getRole());
     return new AuthUser(user);
   }
 

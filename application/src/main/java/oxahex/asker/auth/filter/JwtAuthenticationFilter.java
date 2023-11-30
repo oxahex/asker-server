@@ -25,14 +25,18 @@ import oxahex.asker.utils.ResponseUtil;
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-  private static final String HEADER = "Authorization";
-  private static final String LOGIN_PATH = "/auth/api/login";
+  private static final String JWT_HEADER_NAME = "Authorization";
+  private static final String JWT_HEADER_PREFIX = "Bearer ";
+  private static final String LOGIN_PATH = "/api/auth/login";
+
+  private final AuthenticationManager authenticationManager;
 
   public JwtAuthenticationFilter(
       AuthenticationManager authenticationManager
   ) {
     super(authenticationManager);
-    super.setFilterProcessesUrl(LOGIN_PATH);
+    setFilterProcessesUrl(LOGIN_PATH);
+    this.authenticationManager = authenticationManager;
   }
 
 
@@ -42,13 +46,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       HttpServletResponse response
   ) throws AuthenticationException {
 
-    log.info("JwtAuthenticationFilter.attemptAuthentication request={}", request.getRequestURI());
+    log.info("[{}] 로그인 시도", request.getRequestURI());
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     try {
       LoginReqDto loginReqDto =
           objectMapper.readValue(request.getInputStream(), LoginReqDto.class);
+
+      log.info("request email={}, password={}", loginReqDto.getEmail(), loginReqDto.getPassword());
 
       // 강제 로그인 처리: 미인증된 Authentication 객체 생성
       UsernamePasswordAuthenticationToken authenticationToken =
@@ -58,7 +64,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
       // 검증 성공 시 AuthenticationManager.authenticate 실행(loadByUsername)
       // JWT 사용하더라도 Spring Security 처리를 해주기 위함
-      return super.getAuthenticationManager().authenticate(authenticationToken);
+      return authenticationManager.authenticate(authenticationToken);
+
 
     } catch (Exception e) {
       // unsuccessfulAuthentication
@@ -91,7 +98,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
     // TODO: Refresh Token 처리
 
-    response.addHeader(HEADER, accessToken);
+    response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + accessToken);
 
     LoginResDto loginResDto = new LoginResDto(authUser.getUser());
     ResponseUtil.success(response, HttpStatus.OK, "정상적으로 로그인 되었습니다.", loginResDto);
