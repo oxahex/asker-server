@@ -46,8 +46,8 @@ public class Notification {
   private NotificationType type;
 
   @Type(JsonType.class)
-  @Column(name = "messages", columnDefinition = "json", nullable = false)
-  private Map<String, String> messages;
+  @Column(name = "front_matter", columnDefinition = "json", nullable = false)
+  private NotificationFrontMatter frontMatter;
 
   @Column(name = "read_date")
   private LocalDateTime readDateTime;
@@ -61,13 +61,16 @@ public class Notification {
       Long id,
       User receiveUser,
       NotificationType type,
-      Map<String, String> messages,
-      LocalDateTime readDateTime
+      Long originId,
+      Long originUserId,
+      String excerpt
   ) {
     this.id = id;
     this.receiveUser = receiveUser;
     this.type = type;
-    this.messages = messages;
-    this.readDateTime = readDateTime;
+    this.frontMatter = NotificationFrontMatter.builder()
+        .originId(originId)
+        .originUserId(originUserId)
+        .excerpt(excerpt).build();
   }
 }
