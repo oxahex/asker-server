@@ -36,19 +36,13 @@ public class JwtTokenProvider {
     Date now = new Date(System.currentTimeMillis());
     Date expireDate = new Date(now.getTime() + tokenType.getExpireTime());
 
-    String jwtToken = JWT.create()
+    return JWT.create()
         .withSubject(authUser.getUsername())
         .withIssuedAt(now)
         .withExpiresAt(expireDate)
         .withClaim(KEY_ID, authUser.getUser().getId())
         .withClaim(KEY_ROLE, authUser.getUser().getRole().name())
         .sign(Algorithm.HMAC512(JWT_TOKEN_KEY));
-
-    if (tokenType == JwtTokenType.REFRESH_TOKEN) {
-      // TODO: Redis 저장
-    }
-
-    return jwtToken;
   }
 
   /**
