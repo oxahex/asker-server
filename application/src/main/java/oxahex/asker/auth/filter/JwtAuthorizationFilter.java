@@ -21,25 +21,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   private static final String JWT_HEADER_NAME = "Authorization";
   private static final String JWT_HEADER_PREFIX = "Bearer ";
 
-  private static final String[] EXCLUDE_PATH = {
-      "/api/auth/join", "/api/auth/login", "/api/auth/logout", "/api/asks"
-  };
-
   public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
     super(authenticationManager);
-  }
-
-  /**
-   * JWT 유효성 검사 예외 URL 지정
-   */
-  @Override
-  protected boolean shouldNotFilter(
-      HttpServletRequest request
-  ) throws ServletException {
-
-    String path = request.getRequestURI();
-
-    return Arrays.stream(EXCLUDE_PATH).anyMatch(path::startsWith);
   }
 
   /**
