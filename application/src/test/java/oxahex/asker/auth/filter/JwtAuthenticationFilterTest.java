@@ -43,7 +43,7 @@ class JwtAuthenticationFilterTest extends MockUser {
 
   @Test
   @DisplayName("인증 성공 - Email, Password 일치, 가입된 회원의 경우 로그인에 성공하고 Access Token이 발급된다.")
-  public void successfulAuthentication() throws Exception {
+  public void authenticate_success() throws Exception {
 
     // given
     LoginReqDto loginResDto = new LoginReqDto();
@@ -71,7 +71,7 @@ class JwtAuthenticationFilterTest extends MockUser {
 
   @Test
   @DisplayName("인증 실패 - Password가 맞지 않는 경유 인증에 실패하고 401 에러가 반환된다.")
-  public void unsuccessfulAuthentication() throws Exception {
+  public void authenticate_failure() throws Exception {
 
     // given
     LoginReqDto loginResDto = new LoginReqDto();
