@@ -30,13 +30,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   private static final String LOGIN_PATH = "/api/auth/login";
 
   private final AuthenticationManager authenticationManager;
+  private final ObjectMapper objectMapper;
 
   public JwtAuthenticationFilter(
-      AuthenticationManager authenticationManager
+      AuthenticationManager authenticationManager,
+      ObjectMapper objectMapper
   ) {
     super(authenticationManager);
     setFilterProcessesUrl(LOGIN_PATH);
     this.authenticationManager = authenticationManager;
+    this.objectMapper = objectMapper;
   }
 
 
@@ -47,8 +50,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   ) throws AuthenticationException {
 
     log.info("[{}] 로그인 시도", request.getRequestURI());
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     try {
       LoginReqDto loginReqDto =
@@ -96,12 +97,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     AuthUser authUser = (AuthUser) authResult.getPrincipal();
     String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
-    // TODO: Refresh Token 처리
 
     response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + accessToken);
 
     LoginResDto loginResDto = new LoginResDto(authUser.getUser());
-    ResponseUtil.success(response, HttpStatus.OK, "정상적으로 로그인 되었습니다.", loginResDto);
+
+    ResponseUtil.success(objectMapper, response, HttpStatus.OK, "정상적으로 로그인 되었습니다.", loginResDto);
   }
 
   /**
@@ -118,6 +119,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         request.getRequestURI());
 
     ResponseUtil.failure(
+        objectMapper,
         response,
         AuthError.AUTHENTICATION_FAILURE.getHttpStatus(),
         AuthError.AUTHENTICATION_FAILURE.getErrorMessage()

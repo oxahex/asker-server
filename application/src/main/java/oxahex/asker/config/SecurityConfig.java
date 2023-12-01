@@ -1,5 +1,6 @@
 package oxahex.asker.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +34,7 @@ public class SecurityConfig {
 
   private final AuthService authService;
   private final PasswordEncoder passwordEncoder;
-  private final AuthenticationExceptionHandler authenticationExceptionHandler;
-  private final AuthorizationExceptionHandler authorizationExceptionHandler;
+  private final ObjectMapper objectMapper;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -71,8 +71,9 @@ public class SecurityConfig {
     http
         .exceptionHandling(exceptionHandler -> {
           exceptionHandler.authenticationEntryPoint(
-              authenticationExceptionHandler); // 인증 실패(401)
-          exceptionHandler.accessDeniedHandler(authorizationExceptionHandler); // 인가(권한) 오류(403)
+              new AuthenticationExceptionHandler(objectMapper)); // 인증 실패(401)
+          exceptionHandler.accessDeniedHandler(
+              new AuthorizationExceptionHandler(objectMapper)); // 인가(권한) 오류(403)
         });
 
     return http.build();
@@ -107,14 +108,14 @@ public class SecurityConfig {
     return new ProviderManager(provider);
   }
 
-  public static class CustomSecurityFilterManager extends
+  public class CustomSecurityFilterManager extends
       AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
       AuthenticationManager authenticationManager = http.getSharedObject(
           AuthenticationManager.class);
-      http.addFilter(new JwtAuthenticationFilter(authenticationManager));
+      http.addFilter(new JwtAuthenticationFilter(authenticationManager, objectMapper));
       http.addFilter(new JwtAuthorizationFilter(authenticationManager));
       super.configure(http);
     }
