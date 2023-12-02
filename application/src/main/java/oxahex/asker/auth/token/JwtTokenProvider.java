@@ -54,6 +54,7 @@ public class JwtTokenProvider {
    */
   public static AuthUser verify(String token) {
 
+    log.info("start verify token={}", token);
     DecodedJWT decodedJWT =
         JWT.require(Algorithm.HMAC512(JWT_TOKEN_KEY)).build().verify(token);
 
@@ -69,6 +70,14 @@ public class JwtTokenProvider {
 
     log.info("role={}", user.getRole());
     return new AuthUser(user);
+  }
+
+  public static String getUserEmail(String token) {
+    return JWT.decode(token).getSubject();
+  }
+
+  public static boolean isExpiredToken(String token) {
+    return JWT.decode(token).getExpiresAt().before(new Date(System.currentTimeMillis()));
   }
 
   /**

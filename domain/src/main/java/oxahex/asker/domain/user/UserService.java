@@ -68,6 +68,26 @@ public class UserService {
     return null;
   }
 
+  /**
+   * 특정 유저의 Refresh Token 반환
+   *
+   * @param email 찾고자 하는 유저 Email
+   * @return 해당 유저의 JWT Refresh Token
+   */
+  public String getRefreshToken(String email) {
+    User user = findUser(email);
+
+    return user.getJwtToken();
+  }
+
+  @Transactional
+  public void updateRefreshToken(String email, String refreshToken) {
+    User user = findUser(email);
+    user.setRefreshToken(refreshToken);
+
+    userRepository.save(user);
+  }
+
 
   /**
    * 유저 생성 검증

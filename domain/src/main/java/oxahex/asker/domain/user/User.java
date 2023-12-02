@@ -70,4 +70,8 @@ public class User {
     this.role = role;
     this.jwtToken = jwtToken;
   }
+
+  public void setRefreshToken(String refreshToken) {
+    this.jwtToken = refreshToken;
+  }
 }
