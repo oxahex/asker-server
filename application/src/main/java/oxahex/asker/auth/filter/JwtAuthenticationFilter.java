@@ -102,7 +102,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     AuthUser authUser = (AuthUser) authResult.getPrincipal();
 
     // Access Token Response Header 전송
-    String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.TEST_TOKEN);
+    String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
     response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + accessToken);
 
     // Refresh Token Redis, RDB 저장
