@@ -1,5 +1,6 @@
 package oxahex.asker.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,13 @@ public class WebConfig {
 
     log.debug("[PasswordEncoder] Bean 등록");
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public ObjectMapper objectMapper() {
+
+    log.debug("[ObjectMapper] Bean 등록");
+    return new ObjectMapper();
   }
 }
 

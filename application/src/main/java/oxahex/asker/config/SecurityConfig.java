@@ -1,5 +1,6 @@
 package oxahex.asker.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +9,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,14 +29,12 @@ import oxahex.asker.error.handler.AuthenticationExceptionHandler;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
   private final AuthService authService;
   private final PasswordEncoder passwordEncoder;
-  private final AuthenticationExceptionHandler authenticationExceptionHandler;
-  private final AuthorizationExceptionHandler authorizationExceptionHandler;
+  private final ObjectMapper objectMapper;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,7 +42,7 @@ public class SecurityConfig {
     log.debug("[SecurityFilterChain] Bean 등록");
 
     http
-//        .headers()  TODO: iframe 비허용 처리
+        .headers(HeadersConfigurer::disable) // iframe 비허용 처리
         .csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS
         .httpBasic(AbstractHttpConfigurer::disable)   // 브라우저 팝업 인증 비허용
@@ -54,13 +53,17 @@ public class SecurityConfig {
 
     http
         .authorizeHttpRequests(request -> {
+
           request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
           request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 질문하기
           request.requestMatchers(HttpMethod.GET, "/api/answers/**").permitAll(); // 답변 조회
 
-          request.requestMatchers("/api/users/**").hasRole(RoleType.USER.name()); // 회원 개인 정보 관련
+          request.requestMatchers("/api/users/**")
+              .hasAuthority(RoleType.USER.name()); // 회원 개인 정보 관련
+          request.requestMatchers("/api/admin/**")
+              .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
 
-          request.anyRequest().authenticated();
+          request.anyRequest().permitAll();
         });
 
     http.apply(new CustomSecurityFilterManager());
@@ -68,8 +71,9 @@ public class SecurityConfig {
     http
         .exceptionHandling(exceptionHandler -> {
           exceptionHandler.authenticationEntryPoint(
-              authenticationExceptionHandler); // 인증 실패(401)
-          exceptionHandler.accessDeniedHandler(authorizationExceptionHandler); // 인가(권한) 오류(403)
+              new AuthenticationExceptionHandler(objectMapper)); // 인증 실패(401)
+          exceptionHandler.accessDeniedHandler(
+              new AuthorizationExceptionHandler(objectMapper)); // 인가(권한) 오류(403)
         });
 
     return http.build();
@@ -104,16 +108,16 @@ public class SecurityConfig {
     return new ProviderManager(provider);
   }
 
-  public static class CustomSecurityFilterManager extends
+  public class CustomSecurityFilterManager extends
       AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
 
     @Override
-    public void configure(HttpSecurity builder) throws Exception {
-      AuthenticationManager authenticationManager = builder.getSharedObject(
+    public void configure(HttpSecurity http) throws Exception {
+      AuthenticationManager authenticationManager = http.getSharedObject(
           AuthenticationManager.class);
-      builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
-      builder.addFilterBefore(new JwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-      super.configure(builder);
+      http.addFilter(new JwtAuthenticationFilter(authenticationManager, objectMapper));
+      http.addFilter(new JwtAuthorizationFilter(authenticationManager));
+      super.configure(http);
     }
   }
 }

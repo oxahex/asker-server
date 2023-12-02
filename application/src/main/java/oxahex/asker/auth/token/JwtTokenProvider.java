@@ -1,4 +1,4 @@
-package oxahex.asker.auth.jwt;
+package oxahex.asker.auth.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -29,26 +29,20 @@ public class JwtTokenProvider {
    * @param tokenType 생성할 토큰 타입(ACCESS_TOKEN, REFRESH_TOKEN)
    * @return JWT Token
    */
-  public static String create(AuthUser authUser, TokenType tokenType) {
+  public static String create(AuthUser authUser, JwtTokenType tokenType) {
 
     log.info("[JWT {} 발급] email={}", tokenType.name(), authUser.getUsername());
 
     Date now = new Date(System.currentTimeMillis());
     Date expireDate = new Date(now.getTime() + tokenType.getExpireTime());
 
-    String jwtToken = JWT.create()
+    return JWT.create()
         .withSubject(authUser.getUsername())
         .withIssuedAt(now)
         .withExpiresAt(expireDate)
         .withClaim(KEY_ID, authUser.getUser().getId())
         .withClaim(KEY_ROLE, authUser.getUser().getRole().name())
         .sign(Algorithm.HMAC512(JWT_TOKEN_KEY));
-
-    if (tokenType == TokenType.REFRESH_TOKEN) {
-      // TODO: Redis 저장
-    }
-
-    return jwtToken;
   }
 
   /**
@@ -64,9 +58,16 @@ public class JwtTokenProvider {
         JWT.require(Algorithm.HMAC512(JWT_TOKEN_KEY)).build().verify(token);
 
     Long id = decodedJWT.getClaim(KEY_ID).asLong();
+    String email = decodedJWT.getSubject();
     String role = decodedJWT.getClaim(KEY_ROLE).asString();
 
-    User user = User.builder().id(id).role(RoleType.valueOf(role)).build();
+    User user = User.builder()
+        .id(id)
+        .email(email)
+        .role(RoleType.valueOf(role))
+        .build();
+
+    log.info("role={}", user.getRole());
     return new AuthUser(user);
   }
 
