@@ -52,15 +52,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     AuthUser authUser = null;
     String accessToken = request.getHeader(JWT_HEADER_NAME).replace(JWT_HEADER_PREFIX, "");
-    log.info("[토큰이 존재함] token={}", accessToken);
 
     // 만료 시간 검증
-    // 만료된 토큰인 경우 Redis, RDB에서 Refresh Token을 가져와 Access Token으로 활용
     if (JwtTokenProvider.isExpiredToken(accessToken)) {
 
       log.info("[JwtAuthorizationFilter] 만료된 토큰");
 
-      // Redis, DB 순서로 찾아서 Refresh Token을 가져옴
+      // 만료된 토큰인 경우 Redis -> RDB 순서로 Refresh Token 찾음
       String email = JwtTokenProvider.getUserEmail(accessToken);
       String refreshToken = jwtTokenService.getRefreshToken(email);
 
@@ -71,19 +69,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         return;
       }
 
-      // Refresh Token으로 AuthUser 생성
+      // Refresh Token이 유요한 경우 Refresh Token으로 AuthUser 객체 생성
       authUser = JwtTokenProvider.verify(refreshToken);
 
-      // Header에 새 Access Token 발급.
-      // Access Token이 유효하지 않고, Refresh Token이 유효한 경우에만 Access Token 재발급
+      // Access Token 재발급
       String reissuedAccessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
       response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + reissuedAccessToken);
+
+    } else {
+      // 유효한 Access Token인 경우 Access Token으로 AuthUser 객체 생성
+      authUser = JwtTokenProvider.verify(accessToken);
     }
 
-    // Access Token이 유요한 경우 Access Token으로 AuthUser 생성
-    authUser = JwtTokenProvider.verify(accessToken);
-
-    // 인증된 Authentication 객체
+    // 생성된 AuthUser 객체로 인증된 Authentication 객체 생성
     Authentication authentication =
         new UsernamePasswordAuthenticationToken(
             authUser, null, authUser.getAuthorities()
