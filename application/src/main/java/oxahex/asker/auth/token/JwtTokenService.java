@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import oxahex.asker.domain.user.UserService;
+import oxahex.asker.domain.user.UserDomainService;
 
 @Slf4j
 @Service
@@ -16,7 +16,7 @@ public class JwtTokenService {
 
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;   // 24h
   private final RedisTemplate<String, String> redisTemplate;
-  private final UserService userService;
+  private final UserDomainService userService;
 
   @Transactional
   public void setRefreshToken(String email, String refreshToken) {

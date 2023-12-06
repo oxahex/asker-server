@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.domain.user.User;
-import oxahex.asker.domain.user.UserService;
+import oxahex.asker.domain.user.UserDomainService;
 import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
 import oxahex.asker.dto.auth.JoinDto.JoinResDto;
 import oxahex.asker.mock.MockUser;
@@ -27,7 +27,7 @@ class AuthServiceTest extends MockUser {
   private AuthService authService;
 
   @Mock
-  private UserService userService;
+  private UserDomainService userService;
 
   @Spy
   private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();  // 실제 객체

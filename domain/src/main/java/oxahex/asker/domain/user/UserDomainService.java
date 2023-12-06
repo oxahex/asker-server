@@ -11,7 +11,7 @@ import oxahex.asker.domain.error.type.UserError;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserDomainService {
 
   private final UserRepository userRepository;
 

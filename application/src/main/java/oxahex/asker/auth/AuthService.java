@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import oxahex.asker.domain.user.User;
-import oxahex.asker.domain.user.UserService;
+import oxahex.asker.domain.user.UserDomainService;
 import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
 import oxahex.asker.dto.auth.JoinDto.JoinResDto;
 
@@ -18,7 +18,7 @@ import oxahex.asker.dto.auth.JoinDto.JoinResDto;
 public class AuthService implements UserDetailsService {
 
   private final PasswordEncoder passwordEncoder;
-  private final UserService userService;
+  private final UserDomainService userService;
 
   @Override
   public UserDetails loadUserByUsername(String username)
