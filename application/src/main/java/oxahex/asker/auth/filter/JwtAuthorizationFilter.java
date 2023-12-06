@@ -51,28 +51,28 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     AuthUser authUser = null;
-    String token = request.getHeader(JWT_HEADER_NAME).replace(JWT_HEADER_PREFIX, "");
-    log.info("[토큰이 존재함] token={}", token);
+    String accessToken = request.getHeader(JWT_HEADER_NAME).replace(JWT_HEADER_PREFIX, "");
+    log.info("[토큰이 존재함] token={}", accessToken);
 
     // 만료 시간 검증
     // 만료된 토큰인 경우 Redis, RDB에서 Refresh Token을 가져와 Access Token으로 활용
-    if (JwtTokenProvider.isExpiredToken(token)) {
+    if (JwtTokenProvider.isExpiredToken(accessToken)) {
 
       log.info("[JwtAuthorizationFilter] 만료된 토큰");
 
       // Redis, DB 순서로 찾아서 Refresh Token을 가져옴
-      String email = JwtTokenProvider.getUserEmail(token);
-      token = jwtTokenService.getRefreshToken(email);
+      String email = JwtTokenProvider.getUserEmail(accessToken);
+      String refreshToken = jwtTokenService.getRefreshToken(email);
 
       // RDB, Redis에 Refresh Token이 없거나 유효하지 않은 경우 재로그인 -> 인가 처리 하지 않고 다음 필터로
-      if (token == null || JwtTokenProvider.isExpiredToken(token)) {
+      if (refreshToken == null || JwtTokenProvider.isExpiredToken(refreshToken)) {
         log.info("[JwtAuthorizationFilter] Refresh Token 없음");
         filterChain.doFilter(request, response);
         return;
       }
 
       // Refresh Token으로 AuthUser 생성
-      authUser = JwtTokenProvider.verify(token);
+      authUser = JwtTokenProvider.verify(refreshToken);
 
       // Header에 새 Access Token 발급.
       // Access Token이 유효하지 않고, Refresh Token이 유효한 경우에만 Access Token 재발급
@@ -81,7 +81,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     // Access Token이 유요한 경우 Access Token으로 AuthUser 생성
-    authUser = JwtTokenProvider.verify(token);
+    authUser = JwtTokenProvider.verify(accessToken);
 
     // 인증된 Authentication 객체
     Authentication authentication =
