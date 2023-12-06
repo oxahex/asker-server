@@ -34,10 +34,13 @@ public class JwtTokenService {
 
     // Redis에서 Refresh Token 찾음
     String refreshToken = get(email);
+    log.info("[Redis Refresh Token] Redis에서 찾음");
 
     // 없으면 RDB에서 찾고, Redis 캐싱
     if (refreshToken == null) {
       refreshToken = userService.getRefreshToken(email);
+      set(email, refreshToken);
+      log.info("[RDB Refresh Token] RDB에서 찾음");
     }
 
     return refreshToken;
