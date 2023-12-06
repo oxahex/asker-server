@@ -57,7 +57,13 @@ public class Ask {
   ) {
 
     this.id = id;
-    this.askUser = askUser;
+
+    // 로그인 유저 질문 생성 시 해당 유저 정보 저장 및 유저 객체에 질문 객체 저장
+    if (askUser != null) {
+      this.askUser = askUser;
+      askUser.setAsk(this);
+    }
+
     this.contents = contents;
     this.askType = askType;
   }

@@ -27,6 +27,11 @@ public class UserDomainService {
         .orElseThrow(() -> new UserException(UserError.NOT_FOUND_USER));
   }
 
+  public User findUser(Long id) {
+    return userRepository.findById(id)
+        .orElseThrow(() -> new UserException(UserError.NOT_FOUND_USER));
+  }
+
   /**
    * 유저 생성
    *
