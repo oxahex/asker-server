@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 /**/src/main/resources/*-secret.yml
+/docker/**/
 
 ### STS ###
 .apt_generated
