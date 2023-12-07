@@ -38,14 +38,14 @@ public class User {
   @Column(name = "name", nullable = false, length = 30)
   private String name;
 
-  @Column(unique = true, nullable = false, length = 100)
+  @Column(name = "email", unique = true, nullable = false, length = 100)
   private String email;
 
   @Column(name = "password", nullable = false, length = 100)
   private String password;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 10)
+  @Column(name = "role", nullable = false, length = 10)
   private RoleType role;
 
   @Column(name = "jwt_token")

@@ -37,11 +37,11 @@ public class Ask {
   @JoinColumn(name = "ask_user_id")
   private User askUser;
 
-  @Column(nullable = false, length = 800)
+  @Column(name = "contents", nullable = false, length = 800)
   private String contents;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 10)
+  @Column(name = "ask_type", nullable = false, length = 10)
   private AskType askType;
 
   @CreatedDate
