@@ -80,9 +80,39 @@ class DispatchServiceTest extends MockUser {
   @DisplayName("질문 생성 - 성공 - 로그인 유저의 경우 특정 유저에게 질문 시 로그인 유저의 정보를 저장한다.")
   public void dispatch_ask_success_with_login_user() throws Exception {
 
-    // given
+    // given: 질문자 정보 존재
+    User askUser = mockUser(1L, "asker", "1234567890");
+    User answerUser = mockUser(2L, "answerer", "1234567890");
+
+    AuthUser authUser = new AuthUser(askUser);
+    AskReqDto askReqDto = new AskReqDto();
+    askReqDto.setAnswerUserId(2L);
+    askReqDto.setContents("2L 유저에게 1L 유저가 보내는 질문?");
+
+    // stub 1:
+    Ask ask = Ask.builder()
+        .id(1L)
+        .askUser(authUser.getUser())
+        .contents(askReqDto.getContents())
+        .askType(AskType.USER)
+        .build();
+    given(askDomainService.createAsk(any(), anyString()))
+        .willReturn(ask);
+
+    // stub 2:
+    Dispatch dispatch = Dispatch.builder()
+        .ask(ask)
+        .answerUser(answerUser)
+        .build();
+    given(dispatchDomainService.createAskDispatch(anyLong(), any(Ask.class)))
+        .willReturn(dispatch);
 
     // when
+    Dispatch result = dispatchService.dispatch(authUser, askReqDto);
+
     // then
+    Assertions.assertEquals(result.getAsk().getId(), 1L);
+    Assertions.assertEquals(result.getAsk().getAskUser().getId(), 1L);
+    Assertions.assertEquals(result.getAnswerUser().getId(), 2L);
   }
 }
