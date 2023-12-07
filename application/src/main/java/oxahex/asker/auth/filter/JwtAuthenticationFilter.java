@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.auth.token.JwtTokenProvider;
+import oxahex.asker.auth.token.JwtTokenService;
 import oxahex.asker.auth.token.JwtTokenType;
 import oxahex.asker.dto.auth.LoginDto.LoginReqDto;
 import oxahex.asker.dto.auth.LoginDto.LoginResDto;
@@ -29,17 +30,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   private static final String JWT_HEADER_PREFIX = "Bearer ";
   private static final String LOGIN_PATH = "/api/auth/login";
 
-  private final AuthenticationManager authenticationManager;
   private final ObjectMapper objectMapper;
+  private final AuthenticationManager authenticationManager;
+  private final JwtTokenService jwtTokenService;
 
   public JwtAuthenticationFilter(
+      ObjectMapper objectMapper,
       AuthenticationManager authenticationManager,
-      ObjectMapper objectMapper
+      JwtTokenService jwtTokenService
   ) {
     super(authenticationManager);
     setFilterProcessesUrl(LOGIN_PATH);
-    this.authenticationManager = authenticationManager;
     this.objectMapper = objectMapper;
+    this.authenticationManager = authenticationManager;
+    this.jwtTokenService = jwtTokenService;
   }
 
 
@@ -96,12 +100,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         request.getRequestURI());
 
     AuthUser authUser = (AuthUser) authResult.getPrincipal();
-    String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
 
+    // Access Token Response Header 전송
+    String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
     response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + accessToken);
 
-    LoginResDto loginResDto = new LoginResDto(authUser.getUser());
+    // Refresh Token Redis, RDB 저장
+    String refreshToken = JwtTokenProvider.create(authUser, JwtTokenType.REFRESH_TOKEN);
+    jwtTokenService.setRefreshToken(authUser.getUsername(), refreshToken);
 
+    LoginResDto loginResDto = new LoginResDto(authUser.getUser());
     ResponseUtil.success(objectMapper, response, HttpStatus.OK, "정상적으로 로그인 되었습니다.", loginResDto);
   }
 

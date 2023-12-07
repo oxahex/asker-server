@@ -11,7 +11,7 @@ import oxahex.asker.error.exception.ValidationException;
 
 @Slf4j
 @RestControllerAdvice
-public class CustomExceptionHandler {
+public class GlobalExceptionHandler {
 
   /**
    * 유저 관련 에러 핸들링

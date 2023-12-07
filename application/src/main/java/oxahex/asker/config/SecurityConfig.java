@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.auth.AuthService;
 import oxahex.asker.auth.filter.JwtAuthenticationFilter;
 import oxahex.asker.auth.filter.JwtAuthorizationFilter;
+import oxahex.asker.auth.token.JwtTokenService;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.error.handler.AuthenticationExceptionHandler;
@@ -35,6 +36,7 @@ public class SecurityConfig {
   private final AuthService authService;
   private final PasswordEncoder passwordEncoder;
   private final ObjectMapper objectMapper;
+  private final JwtTokenService jwtTokenService;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -115,8 +117,9 @@ public class SecurityConfig {
     public void configure(HttpSecurity http) throws Exception {
       AuthenticationManager authenticationManager = http.getSharedObject(
           AuthenticationManager.class);
-      http.addFilter(new JwtAuthenticationFilter(authenticationManager, objectMapper));
-      http.addFilter(new JwtAuthorizationFilter(authenticationManager));
+      http.addFilter(
+          new JwtAuthenticationFilter(objectMapper, authenticationManager, jwtTokenService));
+      http.addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenService));
       super.configure(http);
     }
   }
