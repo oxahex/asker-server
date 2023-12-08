@@ -70,11 +70,6 @@ class AskControllerTest extends MockUser {
         .askType(AskType.USER)
         .build();
 
-    Dispatch dispatch = Dispatch.builder()
-        .ask(ask)
-        .answerUser(this.answerUser)
-        .build();
-
     given(dispatchService.dispatchAsk(any(), any(AskReqDto.class))).willReturn(ask);
 
     String requestBody = objectMapper.writeValueAsString(askReqDto);
@@ -106,10 +101,7 @@ class AskControllerTest extends MockUser {
         .contents(askReqDto.getContents())
         .askType(AskType.USER)
         .build();
-    Dispatch dispatch = Dispatch.builder()
-        .ask(ask)
-        .answerUser(answerUser)
-        .build();
+
     given(dispatchService.dispatchAsk(any(), any(AskReqDto.class))).willReturn(ask);
 
     String requestBody = objectMapper.writeValueAsString(askReqDto);
