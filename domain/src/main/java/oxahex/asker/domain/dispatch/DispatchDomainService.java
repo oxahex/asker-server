@@ -45,12 +45,13 @@ public class DispatchDomainService {
 
   /**
    * 특정 질문 전송 내역 조회
+   * TODO: Ask_Id, Ask 차이
    *
-   * @param dispatchId 전송 내역 ID
-   * @return 해당 하는 전송 내역
+   * @param ask 해당 질문
+   * @return 질문에 해당 하는 전송 내역
    */
-  public Dispatch findDispatch(Long dispatchId) {
-    return dispatchRepository.findById(dispatchId)
+  public Dispatch findDispatch(Ask ask) {
+    return dispatchRepository.findByAsk(ask)
         .orElseThrow(() -> new DispatchException(DispatchError.DISPATCH_NOT_FOUND));
   }
 

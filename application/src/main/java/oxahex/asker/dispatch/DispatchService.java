@@ -59,7 +59,7 @@ public class DispatchService {
 
     // 질문 ID로 질문 전송 내역 확인
     Ask ask = askDomainService.findAsk(answerReqDto.getAskId());
-    Dispatch dispatch = dispatchDomainService.findDispatch(ask.getId());
+    Dispatch dispatch = dispatchDomainService.findDispatch(ask);
 
     // 전송 내역에 명시된 답변 가능 유저와 요청 유저가 다른 경우
     if (!Objects.equals(dispatch.getAnswerUser().getId(), answerUser.getId())) {
