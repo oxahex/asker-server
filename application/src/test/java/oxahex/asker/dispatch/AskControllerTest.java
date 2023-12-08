@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AskDto.AskReqDto;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskType;
-import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserRepository;
 import oxahex.asker.mock.MockUser;
