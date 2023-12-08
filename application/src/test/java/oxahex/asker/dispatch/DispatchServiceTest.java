@@ -68,12 +68,11 @@ class DispatchServiceTest extends MockUser {
         .willReturn(dispatch);
 
     // when
-    Dispatch result = dispatchService.dispatch(null, askReqDto);
+    Ask result = dispatchService.dispatchAsk(null, askReqDto);
 
     // then
-    Assertions.assertEquals(result.getAsk().getId(), 1L);
-    Assertions.assertNull(result.getAsk().getAskUser());
-    Assertions.assertEquals(result.getAnswerUser().getId(), 2L);
+    Assertions.assertEquals(result.getId(), 1L);
+    Assertions.assertNull(result.getAskUser());
   }
 
   @Test
@@ -108,11 +107,10 @@ class DispatchServiceTest extends MockUser {
         .willReturn(dispatch);
 
     // when
-    Dispatch result = dispatchService.dispatch(authUser, askReqDto);
+    Ask result = dispatchService.dispatchAsk(authUser, askReqDto);
 
     // then
-    Assertions.assertEquals(result.getAsk().getId(), 1L);
-    Assertions.assertEquals(result.getAsk().getAskUser().getId(), 1L);
-    Assertions.assertEquals(result.getAnswerUser().getId(), 2L);
+    Assertions.assertEquals(result.getId(), 1L);
+    Assertions.assertEquals(result.getAskUser().getId(), 1L);
   }
 }

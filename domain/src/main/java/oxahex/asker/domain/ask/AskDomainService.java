@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import oxahex.asker.domain.error.exception.DispatchException;
+import oxahex.asker.domain.error.type.DispatchError;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
 
@@ -18,7 +20,7 @@ public class AskDomainService {
 
 
   /**
-   * 로그인 유저 질문 생성
+   * 질문 생성
    *
    * @param askUser  질문 유저(Nullable)
    * @param contents 질문 내용
@@ -39,6 +41,12 @@ public class AskDomainService {
   public Ask deleteAsk() {
 
     return null;
+  }
+
+  // 질문 조회
+  public Ask findAsk(Long askId) {
+    return askRepository.findById(askId)
+        .orElseThrow(() -> new DispatchException(DispatchError.ASK_NOT_FOUND));
   }
 
 }
