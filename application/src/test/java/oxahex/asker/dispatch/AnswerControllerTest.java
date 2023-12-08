@@ -65,7 +65,7 @@ class AnswerControllerTest extends MockUser {
 
   @Test
   @WithUserDetails(value = "answerer@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-  @DisplayName("답변 요청 성공 - 로그인 유저는 자신에게 온 질문에 답변할 수 있다.")
+  @DisplayName("답변 성공 - 로그인 유저는 자신에게 온 질문에 답변할 수 있다.")
   public void answer_with_login_user_success() throws Exception {
 
     // given
@@ -98,5 +98,25 @@ class AnswerControllerTest extends MockUser {
 
     // then
     resultActions.andExpect(status().isCreated());
+  }
+
+  @Test
+  @DisplayName("답변 실패 - 로그인하지 않은 유저는 접근할 수 없습니다.")
+  public void answer_without_login_failure() throws Exception {
+
+    // given
+    AnswerReqDto answerReqDto = new AnswerReqDto();
+    answerReqDto.setAskId(1L);
+    answerReqDto.setContents("asker 유저의 질문에 대한 answerer 유저의 답변");
+
+    String requestBody = objectMapper.writeValueAsString(answerReqDto);
+
+    // when
+    ResultActions resultActions = mockMvc.perform(post("/api/answers")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(requestBody));
+
+    // then
+    resultActions.andExpect(status().isUnauthorized());
   }
 }

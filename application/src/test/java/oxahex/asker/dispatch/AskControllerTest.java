@@ -133,6 +133,6 @@ class AskControllerTest extends MockUser {
         .content(requestBody));
 
     // then
-    resultActions.andExpect(status().isMethodNotAllowed());
+    resultActions.andExpect(status().isUnauthorized());
   }
 }

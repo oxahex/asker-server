@@ -61,11 +61,11 @@ public class SecurityConfig {
           request.requestMatchers(HttpMethod.GET, "/api/answers/**").permitAll(); // 답변 조회
 
           request.requestMatchers("/api/users/**")
-              .hasAuthority(RoleType.USER.name()); // 회원 개인 정보 관련
+              .hasAuthority(RoleType.USER.name()); // 로그인이 필요한 요청
           request.requestMatchers("/api/admin/**")
               .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
 
-          request.anyRequest().permitAll();
+          request.anyRequest().authenticated();
         });
 
     http.apply(new CustomSecurityFilterManager());
