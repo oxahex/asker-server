@@ -35,10 +35,10 @@ public class AnswerController {
         answerReqDto.getDispatchId(), answerReqDto.getContents());
 
     Answer answer = dispatchService.dispatchAnswer(authUser.getUser(), answerReqDto);
-    AnswerInfoDto askInfo = AnswerDto.fromEntityToAnswerInfo(answer);
+    AnswerInfoDto answerInfo = AnswerDto.fromEntityToAnswerInfo(answer);
 
     return new ResponseEntity<>(
-        new ResponseDto<>(201, "성공적으로 답변했습니다.", askInfo), HttpStatus.CREATED
+        new ResponseDto<>(201, "성공적으로 답변했습니다.", answerInfo), HttpStatus.CREATED
     );
   }
 
