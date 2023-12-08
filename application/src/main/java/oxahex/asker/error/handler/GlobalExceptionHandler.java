@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import oxahex.asker.domain.error.exception.DispatchException;
 import oxahex.asker.domain.error.exception.UserException;
 import oxahex.asker.dto.ResponseDto;
 import oxahex.asker.error.exception.ValidationException;
@@ -21,6 +22,25 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(UserException.class)
   public ResponseEntity<?> userException(UserException e) {
+    log.error(e.getErrorMessage());
+
+    ResponseDto<?> response = ResponseDto.builder()
+        .code(e.getStatusCode())
+        .message(e.getErrorMessage())
+        .data(null).build();
+
+    return new ResponseEntity<>(response,
+        HttpStatus.valueOf(e.getStatusCode()));
+  }
+
+  /**
+   * 질문/답변 관련 에러 핸들링
+   *
+   * @param e UserException
+   * @return Error Response with custom UserException Status Code
+   */
+  @ExceptionHandler(DispatchException.class)
+  public ResponseEntity<?> dispatchException(DispatchException e) {
     log.error(e.getErrorMessage());
 
     ResponseDto<?> response = ResponseDto.builder()
