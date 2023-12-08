@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import oxahex.asker.domain.error.exception.DispatchException;
 import oxahex.asker.domain.error.exception.UserException;
 import oxahex.asker.dto.ResponseDto;
+import oxahex.asker.error.exception.ServiceException;
 import oxahex.asker.error.exception.ValidationException;
 
 @Slf4j
@@ -31,6 +32,24 @@ public class GlobalExceptionHandler {
 
     return new ResponseEntity<>(response,
         HttpStatus.valueOf(e.getStatusCode()));
+  }
+
+  /**
+   * 서비스 관련 에러 핸들링
+   *
+   * @param e UserException
+   * @return Error Response with custom UserException Status Code
+   */
+  @ExceptionHandler(ServiceException.class)
+  public ResponseEntity<?> serviceException(ServiceException e) {
+    log.error(e.getErrorMessage());
+
+    ResponseDto<?> response = ResponseDto.builder()
+        .code(e.getHttpStatus().value())
+        .message(e.getErrorMessage())
+        .data(null).build();
+
+    return new ResponseEntity<>(response, e.getHttpStatus());
   }
 
   /**

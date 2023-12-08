@@ -16,6 +16,8 @@ import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.dispatch.DispatchDomainService;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
+import oxahex.asker.error.exception.ServiceException;
+import oxahex.asker.error.type.ServiceError;
 
 @Slf4j
 @Service
@@ -59,12 +61,11 @@ public class DispatchService {
 
     // 전송 내역에 명시된 답변 가능 유저와 요청 유저가 다른 경우
     if (!Objects.equals(dispatch.getAnswerUser().getId(), answerUser.getId())) {
-      // 에러 던짐
+
+      throw new ServiceException(ServiceError.NO_AUTHORITY_TO_ANSWER);
     }
 
     // 문제 없으면 답변 생성
     return answerDomainService.createAnswer(dispatch, answerReqDto.getContents());
   }
-
-
 }
