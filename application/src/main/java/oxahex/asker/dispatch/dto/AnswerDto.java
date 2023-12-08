@@ -18,7 +18,7 @@ public class AnswerDto {
 
     @NotNull
     @Max(value = Long.MAX_VALUE, message = "올바른 값이 아닙니다.")
-    private Long dispatchId;
+    private Long askId;
 
     @NotEmpty(message = "답변 내용을 입력해주세요.")
     @Pattern(regexp = "^.{10,800}$", message = "답변 내용은 최소 10자, 최대 800자 까지 입력할 수 있습니다.")

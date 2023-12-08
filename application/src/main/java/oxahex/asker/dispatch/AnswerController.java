@@ -24,15 +24,14 @@ public class AnswerController {
 
   private final DispatchService dispatchService;
 
-  // TODO: 여기 진입한 거면 authUser에 user가 반드시 있는데?
   @PostMapping
   public ResponseEntity<ResponseDto<AnswerInfoDto>> answer(
       @RequestBody @Valid AnswerDto.AnswerReqDto answerReqDto,
       @AuthenticationPrincipal AuthUser authUser
   ) {
 
-    log.info("[AnswerController.answer] dispatch_id={}, contents={}",
-        answerReqDto.getDispatchId(), answerReqDto.getContents());
+    log.info("[AnswerController.answer] ask_id={}, contents={}",
+        answerReqDto.getAskId(), answerReqDto.getContents());
 
     Answer answer = dispatchService.dispatchAnswer(authUser.getUser(), answerReqDto);
     AnswerInfoDto answerInfo = AnswerDto.fromEntityToAnswerInfo(answer);
