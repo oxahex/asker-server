@@ -131,11 +131,14 @@ class DispatchServiceTest extends MockUser {
     User answerUser = mockUser(1L, "로그인 유저", "1234567890");
     // 요청 데이터
     AnswerReqDto answerReqDto = new AnswerReqDto();
-    answerReqDto.setDispatchId(2L);
+    answerReqDto.setAskId(3L);
     answerReqDto.setContents("3L 질문에 대한 답변");
+
     // 질문
     Ask ask = Ask.builder()
         .id(3L).contents("질문 내용").build();
+    given(askDomainService.findAsk(anyLong())).willReturn(ask);
+
     // 질문 전송 내역
     Dispatch dispatch = Dispatch.builder()
         .answerUser(answerUser)
@@ -143,7 +146,7 @@ class DispatchServiceTest extends MockUser {
         .build();
 
     // Dispatch 정보 가져옴
-    given(dispatchDomainService.findDispatch(anyLong()))
+    given(dispatchDomainService.findDispatch(any(Ask.class)))
         .willReturn(dispatch);
 
     // 질문에 대한 답변 생성
@@ -171,15 +174,18 @@ class DispatchServiceTest extends MockUser {
 
     // given
     // 답변할 유저 정보
-    User answerUser = mockUser(1L, "로그인 유저", "1234567890");
+    User loginUser = mockUser(1L, "로그인 유저", "1234567890");
     User otherUser = mockUser(2L, "다른 유저", "1234567890");
-    // 요청 데이터
-    AnswerReqDto answerReqDto = new AnswerReqDto();
-    answerReqDto.setDispatchId(2L);
-    answerReqDto.setContents("3L 질문에 대한 답변");
+
     // 질문
     Ask ask = Ask.builder()
-        .id(3L).contents("질문 내용").build();
+        .id(2L).contents("질문 내용").build();
+
+    // 작성한 답변 데이터
+    AnswerReqDto answerReqDto = new AnswerReqDto();
+    answerReqDto.setAskId(2L);
+    answerReqDto.setContents("2L 질문에 대한 답변");
+
     // 질문 전송 내역: 요청 유저와 다른 유저에게 보낸 질문 전송 내역
     Dispatch dispatch = Dispatch.builder()
         .answerUser(otherUser)
@@ -187,12 +193,12 @@ class DispatchServiceTest extends MockUser {
         .build();
 
     // Dispatch 정보 가져옴
-    given(dispatchDomainService.findDispatch(anyLong()))
+    given(dispatchDomainService.findDispatch(any()))
         .willReturn(dispatch);
 
     // when
     ServiceException exception = Assertions.assertThrows(ServiceException.class,
-        () -> dispatchService.dispatchAnswer(answerUser, answerReqDto));
+        () -> dispatchService.dispatchAnswer(loginUser, answerReqDto));
 
     // then
     Assertions.assertEquals(exception.getHttpStatus(),

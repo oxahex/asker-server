@@ -70,7 +70,7 @@ class AnswerControllerTest extends MockUser {
 
     // given
     AnswerReqDto answerReqDto = new AnswerReqDto();
-    answerReqDto.setDispatchId(1L);
+    answerReqDto.setAskId(1L);
     answerReqDto.setContents("asker 유저의 질문에 대한 answerer 유저의 답변");
 
     Ask ask = Ask.builder()
