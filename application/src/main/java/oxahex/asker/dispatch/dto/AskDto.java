@@ -4,11 +4,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import oxahex.asker.domain.dispatch.Dispatch;
-import oxahex.asker.dto.user.dto.UserDto;
-import oxahex.asker.dto.user.dto.UserDto.UserInfoDto;
+import oxahex.asker.domain.ask.Ask;
 
 public class AskDto {
 
@@ -30,24 +29,18 @@ public class AskDto {
   public static class AskInfoDto {
 
     private Long askId;
-    private UserInfoDto askUserInfo;
-    private UserInfoDto answerUserInfo;
     private String contents;
+    private LocalDateTime createdDate;
   }
 
-  public static AskInfoDto fromEntityToAskInfo(Dispatch dispatch) {
+  public static AskInfoDto fromEntityToAskInfo(Ask ask) {
 
-    AskInfoDto askInfoDto = new AskInfoDto();
-    askInfoDto.setAskId(dispatch.getAsk().getId());
+    AskInfoDto askInfo = new AskInfoDto();
+    askInfo.setAskId(ask.getId());
+    askInfo.setContents(ask.getContents());
+    askInfo.setCreatedDate(ask.getCreatedDateTime());
 
-    if (dispatch.getAsk().getAskUser() != null) {
-      askInfoDto.setAskUserInfo(UserDto.fromEntityToUserInfo(dispatch.getAsk().getAskUser()));
-    }
-
-    askInfoDto.setAnswerUserInfo(UserDto.fromEntityToUserInfo(dispatch.getAnswerUser()));
-    askInfoDto.setContents(dispatch.getAsk().getContents());
-
-    return askInfoDto;
+    return askInfo;
   }
 
 }

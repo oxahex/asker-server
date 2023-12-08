@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.dispatch.dto.AskDto;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
-import oxahex.asker.domain.dispatch.Dispatch;
+import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.dto.ResponseDto;
 
 @Slf4j
@@ -33,8 +33,8 @@ public class AskController {
     log.info("[AskController.ask] ask_user_id={}, contents={}",
         askReqDto.getAnswerUserId(), askReqDto.getContents());
 
-    Dispatch dispatch = dispatchService.dispatch(authUser, askReqDto);
-    AskInfoDto askInfo = AskDto.fromEntityToAskInfo(dispatch);
+    Ask ask = dispatchService.dispatchAsk(authUser, askReqDto);
+    AskInfoDto askInfo = AskDto.fromEntityToAskInfo(ask);
 
     return new ResponseEntity<>(
         new ResponseDto<>(201, "성공적으로 질문했습니다.", askInfo), HttpStatus.CREATED
