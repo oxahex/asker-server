@@ -13,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import oxahex.asker.auth.AuthUser;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerReqDto;
+import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.dispatch.dto.AskDto.AskReqDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.answer.AnswerDomainService;
@@ -76,11 +78,10 @@ class DispatchServiceTest extends MockUser {
         .willReturn(dispatch);
 
     // when
-    Ask result = dispatchService.dispatchAsk(null, askReqDto);
+    AskInfoDto askInfo = dispatchService.dispatchAsk(null, askReqDto);
 
     // then
-    Assertions.assertEquals(result.getId(), 1L);
-    Assertions.assertNull(result.getAskUser());
+    Assertions.assertEquals(askInfo.getAskId(), 1L);
   }
 
   @Test
@@ -115,11 +116,10 @@ class DispatchServiceTest extends MockUser {
         .willReturn(dispatch);
 
     // when
-    Ask result = dispatchService.dispatchAsk(authUser, askReqDto);
+    AskInfoDto askInfo = dispatchService.dispatchAsk(authUser, askReqDto);
 
     // then
-    Assertions.assertEquals(result.getId(), 1L);
-    Assertions.assertEquals(result.getAskUser().getId(), 1L);
+    Assertions.assertEquals(askInfo.getAskId(), 1L);
   }
 
   @Test
@@ -159,13 +159,13 @@ class DispatchServiceTest extends MockUser {
         .willReturn(answer);
 
     // when
-    Answer createdAnswer = dispatchService.dispatchAnswer(answerUser, answerReqDto);
+    AnswerInfoDto answerInfo = dispatchService.dispatchAnswer(answerUser, answerReqDto);
 
     // then
-    // 생성된 답변의 작성자 ID가 answerUser ID와 같음
-    Assertions.assertEquals(createdAnswer.getAnswerUser().getId(), answerUser.getId());
+    // 요청한 질문(3L)에 대한 답변
+    Assertions.assertEquals(answerInfo.getAsk().getAskId(), ask.getId());
     // 생성된 답변의 내용이 요청한 답변 내용과 같음
-    Assertions.assertEquals(createdAnswer.getContents(), answerReqDto.getContents());
+    Assertions.assertEquals(answerInfo.getContents(), answerReqDto.getContents());
   }
 
   @Test

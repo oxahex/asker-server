@@ -21,6 +21,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import oxahex.asker.dispatch.dto.AskDto;
+import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.dispatch.dto.AskDto.AskReqDto;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskType;
@@ -69,7 +71,9 @@ class AskControllerTest extends MockUser {
         .askType(AskType.USER)
         .build();
 
-    given(dispatchService.dispatchAsk(any(), any(AskReqDto.class))).willReturn(ask);
+    AskInfoDto askInfo = AskDto.fromEntityToAskInfo(ask);
+
+    given(dispatchService.dispatchAsk(any(), any(AskReqDto.class))).willReturn(askInfo);
 
     String requestBody = objectMapper.writeValueAsString(askReqDto);
 
@@ -101,7 +105,8 @@ class AskControllerTest extends MockUser {
         .askType(AskType.USER)
         .build();
 
-    given(dispatchService.dispatchAsk(any(), any(AskReqDto.class))).willReturn(ask);
+    AskInfoDto askInfo = AskDto.fromEntityToAskInfo(ask);
+    given(dispatchService.dispatchAsk(any(), any(AskReqDto.class))).willReturn(askInfo);
 
     String requestBody = objectMapper.writeValueAsString(askReqDto);
 

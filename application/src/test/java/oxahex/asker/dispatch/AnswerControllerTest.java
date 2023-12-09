@@ -20,7 +20,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import oxahex.asker.dispatch.dto.AnswerDto;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerReqDto;
+import oxahex.asker.dispatch.dto.AskDto;
+import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskType;
@@ -86,8 +90,10 @@ class AnswerControllerTest extends MockUser {
         .ask(ask)
         .build();
 
+    AnswerInfoDto answerInfo = AnswerDto.fromEntityToAnswerInfo(answer);
+
     given(dispatchService.dispatchAnswer(any(User.class), any(AnswerReqDto.class)))
-        .willReturn(answer);
+        .willReturn(answerInfo);
 
     String requestBody = objectMapper.writeValueAsString(answerReqDto);
 
