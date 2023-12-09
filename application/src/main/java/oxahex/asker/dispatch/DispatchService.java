@@ -6,7 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.auth.AuthUser;
+import oxahex.asker.dispatch.dto.AnswerDto;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerReqDto;
+import oxahex.asker.dispatch.dto.AskDto;
+import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.dispatch.dto.AskDto.AskReqDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.answer.AnswerDomainService;
@@ -31,11 +35,9 @@ public class DispatchService {
   private final DispatchDomainService dispatchDomainService;
 
   @Transactional
-  public Ask dispatchAsk(AuthUser authUser, AskReqDto askReqDto) {
+  public AskInfoDto dispatchAsk(AuthUser authUser, AskReqDto askReqDto) {
 
-    log.info("[DispatchService][질문하기] ask_user_id={}, contents={}",
-        askReqDto.getAnswerUserId(), askReqDto.getContents());
-
+    log.info("[DispatchService] 유저 질문");
     // 익명 질문인 경우 null
     User askUser = null;
     if (authUser != null) {
@@ -48,11 +50,11 @@ public class DispatchService {
     // 디스패치 생성
     dispatchDomainService.createAskDispatch(askReqDto.getAnswerUserId(), ask);
 
-    return ask;
+    return AskDto.fromEntityToAskInfo(ask);
   }
 
   @Transactional
-  public Answer dispatchAnswer(User answerUser, AnswerReqDto answerReqDto) {
+  public AnswerInfoDto dispatchAnswer(User answerUser, AnswerReqDto answerReqDto) {
 
     log.info("[DispatchService][답변하기] askId={}, contents={}",
         answerReqDto.getAskId(), answerReqDto.getContents());
@@ -67,7 +69,10 @@ public class DispatchService {
       throw new ServiceException(ServiceError.NO_AUTHORITY_TO_ANSWER);
     }
 
-    // 문제 없으면 답변 생성
-    return answerDomainService.createAnswer(dispatch, answerReqDto.getContents());
+    // 답변 생성
+    Answer answer =
+        answerDomainService.createAnswer(dispatch, answerReqDto.getContents());
+
+    return AnswerDto.fromEntityToAnswerInfo(answer);
   }
 }
