@@ -24,11 +24,6 @@ public class UserService {
     // 받은 질문 내역 확인
     List<Dispatch> dispatches = dispatchDomainService.findDispatches(userId);
 
-    // 답변 가능한 질문 내역이 없는 경우 null 반환
-    if (dispatches.isEmpty()) {
-      return null;
-    }
-
     // 질문 전송 내역에서 질문 추출, 없으면 null 반환
     return dispatches.stream()
         .map(dispatch -> AskDto.fromEntityToAskInfo(dispatch.getAsk()))
