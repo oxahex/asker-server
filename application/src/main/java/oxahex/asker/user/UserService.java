@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AskDto;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
-import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.dispatch.DispatchDomainService;
 
