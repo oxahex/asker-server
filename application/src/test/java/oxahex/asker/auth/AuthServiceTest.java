@@ -16,8 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
-import oxahex.asker.dto.auth.JoinDto.JoinReqDto;
-import oxahex.asker.dto.auth.JoinDto.JoinResDto;
+import oxahex.asker.auth.dto.JoinDto.JoinReqDto;
+import oxahex.asker.auth.dto.JoinDto.JoinResDto;
 import oxahex.asker.mock.MockUser;
 
 @ExtendWith(MockitoExtension.class)
