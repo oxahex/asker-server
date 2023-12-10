@@ -70,24 +70,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
       // 다음 필터를 타지 않음
       return;
-//
-//      // 만료된 토큰인 경우 Redis -> RDB 순서로 Refresh Token 찾음
-//      String email = JwtTokenProvider.getUserEmail(accessToken);
-//      String refreshToken = jwtTokenService.getRefreshToken(email);
-
-      // RDB, Redis에 Refresh Token이 없거나 유효하지 않은 경우 재로그인 -> 인가 처리 하지 않고 다음 필터로
-//      if (refreshToken == null || JwtTokenProvider.isExpiredToken(refreshToken)) {
-//        log.info("[JwtAuthorizationFilter] Refresh Token 없음");
-//        filterChain.doFilter(request, response);
-//        return;
-//      }
-
-      // Refresh Token이 유요한 경우 Refresh Token으로 AuthUser 객체 생성
-//      authUser = JwtTokenProvider.verify(refreshToken);
-
-      // Access Token 재발급
-//      String reissuedAccessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
-//      response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + reissuedAccessToken);
     }
 
     AuthUser authUser = JwtTokenProvider.verify(accessToken);
