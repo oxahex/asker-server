@@ -57,6 +57,4 @@ public class ResponseUtil {
       log.error(e.getMessage());
     }
   }
-
-
 }
