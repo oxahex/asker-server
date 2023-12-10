@@ -14,36 +14,35 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import oxahex.asker.auth.AuthUser;
+import oxahex.asker.auth.dto.TokenDto;
 import oxahex.asker.auth.token.JwtTokenProvider;
-import oxahex.asker.auth.token.JwtTokenService;
 import oxahex.asker.auth.token.JwtTokenType;
-import oxahex.asker.dto.auth.LoginDto.LoginReqDto;
-import oxahex.asker.dto.auth.LoginDto.LoginResDto;
+import oxahex.asker.auth.dto.LoginDto.LoginReqDto;
+import oxahex.asker.auth.dto.LoginDto.LoginResDto;
 import oxahex.asker.error.exception.AuthException;
 import oxahex.asker.error.type.AuthError;
+import oxahex.asker.utils.RedisUtil;
 import oxahex.asker.utils.ResponseUtil;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-  private static final String JWT_HEADER_NAME = "Authorization";
-  private static final String JWT_HEADER_PREFIX = "Bearer ";
   private static final String LOGIN_PATH = "/api/auth/login";
-
+  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;   // 24h
   private final ObjectMapper objectMapper;
+  private final RedisUtil redisUtil;
   private final AuthenticationManager authenticationManager;
-  private final JwtTokenService jwtTokenService;
 
   public JwtAuthenticationFilter(
-      ObjectMapper objectMapper,
       AuthenticationManager authenticationManager,
-      JwtTokenService jwtTokenService
+      ObjectMapper objectMapper,
+      RedisUtil redisUtil
   ) {
     super(authenticationManager);
     setFilterProcessesUrl(LOGIN_PATH);
-    this.objectMapper = objectMapper;
     this.authenticationManager = authenticationManager;
-    this.jwtTokenService = jwtTokenService;
+    this.objectMapper = objectMapper;
+    this.redisUtil = redisUtil;
   }
 
 
@@ -71,7 +70,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       // JWT 사용하더라도 Spring Security 처리를 해주기 위함
       return authenticationManager.authenticate(authenticationToken);
 
-
     } catch (Exception e) {
       // unsuccessfulAuthentication
       // InternalAuthenticationServiceException
@@ -81,12 +79,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
   /**
    * Email, Password 인증 성공 시 JWT Token 발급
-   * <ol>
-   *     <li>JWT Access Token 발급</li>
-   *     <li>JWT Refresh Token 발급</li>
-   *     <li>Response Header에 Access Token 전송</li>
-   *     <li>Refresh Token은 Redis에 저장, 응답 Header로 전송하지 않음</li>
-   * </ol>
    */
   @Override
   protected void successfulAuthentication(
@@ -101,15 +93,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     AuthUser authUser = (AuthUser) authResult.getPrincipal();
 
-    // Access Token Response Header 전송
+    // Access Token
     String accessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
-    response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + accessToken);
 
-    // Refresh Token Redis, RDB 저장
+    // Refresh Token - Redis, RDB 저장
     String refreshToken = JwtTokenProvider.create(authUser, JwtTokenType.REFRESH_TOKEN);
-    jwtTokenService.setRefreshToken(authUser.getUsername(), refreshToken);
+    redisUtil.set(authUser.getUsername(), refreshToken, REFRESH_TOKEN_EXPIRE_TIME);
 
-    LoginResDto loginResDto = new LoginResDto(authUser.getUser());
+    TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
+    LoginResDto loginResDto = new LoginResDto(authUser.getUser(), tokenDto);
+
     ResponseUtil.success(objectMapper, response, HttpStatus.OK, "정상적으로 로그인 되었습니다.", loginResDto);
   }
 

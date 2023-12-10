@@ -1,5 +1,6 @@
 package oxahex.asker.auth.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,20 +14,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.auth.token.JwtTokenProvider;
-import oxahex.asker.auth.token.JwtTokenService;
-import oxahex.asker.auth.token.JwtTokenType;
+import oxahex.asker.error.type.AuthError;
+import oxahex.asker.utils.ResponseUtil;
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
   private static final String JWT_HEADER_NAME = "Authorization";
   private static final String JWT_HEADER_PREFIX = "Bearer ";
-  private final JwtTokenService jwtTokenService;
 
-  public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
-      JwtTokenService jwtTokenService) {
+
+  private final ObjectMapper objectMapper;
+
+  public JwtAuthorizationFilter(
+      AuthenticationManager authenticationManager,
+      ObjectMapper objectMapper
+  ) {
     super(authenticationManager);
-    this.jwtTokenService = jwtTokenService;
+    this.objectMapper = objectMapper;
   }
 
   /**
@@ -42,44 +47,50 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     log.info("[{}] JWT 유효성 검사", request.getRequestURI());
 
-    // Header 유효성 검증
-    // Token이 없는 경우 인가 처리 하지 않고 다음 필터로
+    // Access Token Request Header에  없는 경우 인가 처리 하지 않고 다음 필터로
     if (!verifyHeader(request, response)) {
       log.info("[JwtAuthorizationFilter] 토큰이 없음");
       filterChain.doFilter(request, response);
       return;
     }
 
-    AuthUser authUser = null;
+    // Access token from request header(Authorization)
     String accessToken = request.getHeader(JWT_HEADER_NAME).replace(JWT_HEADER_PREFIX, "");
 
-    // 만료 시간 검증
+    // Expired access token
     if (JwtTokenProvider.isExpiredToken(accessToken)) {
 
-      log.info("[JwtAuthorizationFilter] 만료된 토큰");
+      log.info("[Expired Access Token]");
+      ResponseUtil.failure(
+          objectMapper,
+          response,
+          AuthError.EXPIRED_ACCESS_TOKEN.getHttpStatus(),
+          AuthError.EXPIRED_ACCESS_TOKEN.getErrorMessage()
+      );
 
-      // 만료된 토큰인 경우 Redis -> RDB 순서로 Refresh Token 찾음
-      String email = JwtTokenProvider.getUserEmail(accessToken);
-      String refreshToken = jwtTokenService.getRefreshToken(email);
+      // 다음 필터를 타지 않음
+      return;
+//
+//      // 만료된 토큰인 경우 Redis -> RDB 순서로 Refresh Token 찾음
+//      String email = JwtTokenProvider.getUserEmail(accessToken);
+//      String refreshToken = jwtTokenService.getRefreshToken(email);
 
       // RDB, Redis에 Refresh Token이 없거나 유효하지 않은 경우 재로그인 -> 인가 처리 하지 않고 다음 필터로
-      if (refreshToken == null || JwtTokenProvider.isExpiredToken(refreshToken)) {
-        log.info("[JwtAuthorizationFilter] Refresh Token 없음");
-        filterChain.doFilter(request, response);
-        return;
-      }
+//      if (refreshToken == null || JwtTokenProvider.isExpiredToken(refreshToken)) {
+//        log.info("[JwtAuthorizationFilter] Refresh Token 없음");
+//        filterChain.doFilter(request, response);
+//        return;
+//      }
 
       // Refresh Token이 유요한 경우 Refresh Token으로 AuthUser 객체 생성
-      authUser = JwtTokenProvider.verify(refreshToken);
+//      authUser = JwtTokenProvider.verify(refreshToken);
 
       // Access Token 재발급
-      String reissuedAccessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
-      response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + reissuedAccessToken);
-
-    } else {
-      // 유효한 Access Token인 경우 Access Token으로 AuthUser 객체 생성
-      authUser = JwtTokenProvider.verify(accessToken);
+//      String reissuedAccessToken = JwtTokenProvider.create(authUser, JwtTokenType.ACCESS_TOKEN);
+//      response.addHeader(JWT_HEADER_NAME, JWT_HEADER_PREFIX + reissuedAccessToken);
     }
+
+    AuthUser authUser = JwtTokenProvider.verify(accessToken);
 
     // 생성된 AuthUser 객체로 인증된 Authentication 객체 생성
     Authentication authentication =

@@ -22,10 +22,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.auth.AuthService;
 import oxahex.asker.auth.filter.JwtAuthenticationFilter;
 import oxahex.asker.auth.filter.JwtAuthorizationFilter;
-import oxahex.asker.auth.token.JwtTokenService;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.error.handler.AuthenticationExceptionHandler;
+import oxahex.asker.utils.RedisUtil;
 
 @Slf4j
 @Configuration
@@ -36,7 +36,7 @@ public class SecurityConfig {
   private final AuthService authService;
   private final PasswordEncoder passwordEncoder;
   private final ObjectMapper objectMapper;
-  private final JwtTokenService jwtTokenService;
+  private final RedisUtil redisUtil;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -118,8 +118,8 @@ public class SecurityConfig {
       AuthenticationManager authenticationManager = http.getSharedObject(
           AuthenticationManager.class);
       http.addFilter(
-          new JwtAuthenticationFilter(objectMapper, authenticationManager, jwtTokenService));
-      http.addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenService));
+          new JwtAuthenticationFilter(authenticationManager, objectMapper, redisUtil));
+      http.addFilter(new JwtAuthorizationFilter(authenticationManager, objectMapper));
       super.configure(http);
     }
   }
