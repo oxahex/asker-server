@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.auth.AuthUser;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.dto.ResponseDto;
 import oxahex.asker.error.exception.ServiceException;
@@ -39,6 +40,25 @@ public class UserController {
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", receivedAskInfos));
   }
+
+  /**
+   * 특정 유저의 답변 목록 조회)
+   *
+   * @param userId 특정 유저의 ID
+   * @return 답변 목록
+   */
+  @GetMapping("/{userId}/answers")
+  public ResponseEntity<ResponseDto<?>> getUserAnswers(
+      @PathVariable Long userId
+  ) {
+
+    log.info("[특정 유저의 답변 목록 조회] 특정 유저 아이디={}", userId);
+
+    List<AnswerInfoDto> answerInfos = userService.getUserAnswers(userId);
+
+    return ResponseEntity.ok(new ResponseDto<>(200, "", answerInfos));
+  }
+
 
   /**
    * 본인에 대한 정보 요청이 아닌 경우 예외 처리

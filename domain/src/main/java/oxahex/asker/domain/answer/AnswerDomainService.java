@@ -1,5 +1,6 @@
 package oxahex.asker.domain.answer;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,14 @@ public class AnswerDomainService {
 
   // 답변 삭제
 
-  // 답변 조회
+  /**
+   * 답변 목록 조회
+   *
+   * @param answerUserId 답변 유저 ID
+   * @return 해당 유저가 답변한 모든 질문 목록
+   */
+  public List<Answer> findAnswers(Long answerUserId) {
+
+    return answerRepository.findAllByAnswerUser_Id(answerUserId);
+  }
 }
