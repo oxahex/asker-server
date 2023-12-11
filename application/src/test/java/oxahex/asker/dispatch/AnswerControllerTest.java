@@ -23,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AnswerDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerReqDto;
-import oxahex.asker.dispatch.dto.AskDto;
-import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskType;
