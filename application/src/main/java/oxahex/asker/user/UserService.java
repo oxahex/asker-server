@@ -13,6 +13,11 @@ import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.answer.AnswerDomainService;
 import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.dispatch.DispatchDomainService;
+import oxahex.asker.domain.user.User;
+import oxahex.asker.domain.user.UserDomainService;
+import oxahex.asker.dto.user.dto.UserDto;
+import oxahex.asker.dto.user.dto.UserDto.UserAnswersDto;
+import oxahex.asker.dto.user.dto.UserDto.UserAsksDto;
 
 @Slf4j
 @Service
@@ -20,6 +25,7 @@ import oxahex.asker.domain.dispatch.DispatchDomainService;
 @RequiredArgsConstructor
 public class UserService {
 
+  private final UserDomainService userDomainService;
   private final DispatchDomainService dispatchDomainService;
   private final AnswerDomainService answerDomainService;
 
@@ -29,15 +35,14 @@ public class UserService {
    * @param userId 유저 ID
    * @return 받은 질문 목록
    */
-  public List<AskInfoDto> getReceivedAsks(Long userId) {
+  public UserAsksDto getReceivedAsks(Long userId) {
 
     // 받은 질문 내역 확인
-    List<Dispatch> dispatches = dispatchDomainService.findDispatches(userId);
+    User answerUser = userDomainService.findUser(userId);
+    List<Dispatch> dispatches = dispatchDomainService.findDispatches(answerUser.getId());
 
     // 질문 전송 내역에서 질문 추출, 없으면 null 반환
-    return dispatches.stream()
-        .map(dispatch -> AskDto.fromEntityToAskInfo(dispatch.getAsk()))
-        .toList();
+    return UserDto.fromEntityToUserAsks(answerUser, dispatches);
   }
 
   /**
@@ -46,12 +51,11 @@ public class UserService {
    * @param userId 유저 ID
    * @return 답변 목록
    */
-  public List<AnswerInfoDto> getUserAnswers(Long userId) {
+  public UserAnswersDto getUserAnswers(Long userId) {
 
-    List<Answer> answers = answerDomainService.findAnswers(userId);
+    User user = userDomainService.findUser(userId);
+    List<Answer> answers = answerDomainService.findAnswers(user.getId());
 
-    return answers.stream()
-        .map(AnswerDto::fromEntityToAnswerInfo)
-        .toList();
+    return UserDto.fromEntityToUserAnswers(user, answers);
   }
 }
