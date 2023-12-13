@@ -42,8 +42,8 @@ public class Notification {
   private User receiveUser;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "type")
-  private NotificationType type;
+  @Column(name = "notification_type")
+  private NotificationType notificationType;
 
   @Type(JsonType.class)
   @Column(name = "front_matter", columnDefinition = "json", nullable = false)
@@ -60,14 +60,14 @@ public class Notification {
   public Notification(
       Long id,
       User receiveUser,
-      NotificationType type,
+      NotificationType notificationType,
       Long originId,
       Long originUserId,
       String excerpt
   ) {
     this.id = id;
     this.receiveUser = receiveUser;
-    this.type = type;
+    this.notificationType = notificationType;
     this.frontMatter = NotificationFrontMatter.builder()
         .originId(originId)
         .originUserId(originUserId)

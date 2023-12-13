@@ -22,10 +22,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.auth.AuthService;
 import oxahex.asker.auth.filter.JwtAuthenticationFilter;
 import oxahex.asker.auth.filter.JwtAuthorizationFilter;
-import oxahex.asker.auth.token.JwtTokenService;
 import oxahex.asker.domain.user.RoleType;
 import oxahex.asker.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.error.handler.AuthenticationExceptionHandler;
+import oxahex.asker.utils.RedisUtil;
 
 @Slf4j
 @Configuration
@@ -36,7 +36,7 @@ public class SecurityConfig {
   private final AuthService authService;
   private final PasswordEncoder passwordEncoder;
   private final ObjectMapper objectMapper;
-  private final JwtTokenService jwtTokenService;
+  private final RedisUtil redisUtil;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,15 +57,16 @@ public class SecurityConfig {
         .authorizeHttpRequests(request -> {
 
           request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
-          request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 질문하기
-          request.requestMatchers(HttpMethod.GET, "/api/answers/**").permitAll(); // 답변 조회
+          request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 특정 유저에게 질문
+          request.requestMatchers(HttpMethod.GET, "/api/users/**/answers/**")
+              .permitAll(); // 특정 유저의 답변 조회
 
           request.requestMatchers("/api/users/**")
-              .hasAuthority(RoleType.USER.name()); // 회원 개인 정보 관련
+              .hasAuthority(RoleType.USER.name()); // 로그인이 필요한 요청
           request.requestMatchers("/api/admin/**")
               .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
 
-          request.anyRequest().permitAll();
+          request.anyRequest().authenticated();
         });
 
     http.apply(new CustomSecurityFilterManager());
@@ -118,8 +119,8 @@ public class SecurityConfig {
       AuthenticationManager authenticationManager = http.getSharedObject(
           AuthenticationManager.class);
       http.addFilter(
-          new JwtAuthenticationFilter(objectMapper, authenticationManager, jwtTokenService));
-      http.addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenService));
+          new JwtAuthenticationFilter(authenticationManager, objectMapper, redisUtil));
+      http.addFilter(new JwtAuthorizationFilter(authenticationManager, objectMapper));
       super.configure(http);
     }
   }

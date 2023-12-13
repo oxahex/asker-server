@@ -17,10 +17,10 @@ import oxahex.asker.domain.error.type.UserError;
 import oxahex.asker.domain.mock.MockObject;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest extends MockObject {
+class UserDomainServiceTest extends MockObject {
 
   @InjectMocks
-  private UserService userService;
+  private UserDomainService userDomainService;
 
   @Mock
   private UserRepository userRepository;
@@ -42,7 +42,7 @@ class UserServiceTest extends MockObject {
     given(userRepository.save(any(User.class))).willReturn(user);
 
     // when
-    User createdUser = userService.createUser(name, email, password);
+    User createdUser = userDomainService.createUser(name, email, password);
 
     // then: name, email, password, role
     Assertions.assertEquals(name, createdUser.getName());
@@ -65,7 +65,7 @@ class UserServiceTest extends MockObject {
 
     // when
     UserException exception = assertThrows(UserException.class,
-        () -> userService.createUser(name, email, password));
+        () -> userDomainService.createUser(name, email, password));
 
     // then
     Assertions.assertEquals(UserError.ALREADY_EXIST_EMAIL.getStatusCode(),

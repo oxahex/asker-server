@@ -11,7 +11,7 @@ import oxahex.asker.domain.error.type.UserError;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserDomainService {
 
   private final UserRepository userRepository;
 
@@ -24,6 +24,11 @@ public class UserService {
    */
   public User findUser(String email) {
     return userRepository.findByEmail(email)
+        .orElseThrow(() -> new UserException(UserError.NOT_FOUND_USER));
+  }
+
+  public User findUser(Long id) {
+    return userRepository.findById(id)
         .orElseThrow(() -> new UserException(UserError.NOT_FOUND_USER));
   }
 

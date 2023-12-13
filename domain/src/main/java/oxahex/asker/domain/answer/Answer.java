@@ -42,7 +42,7 @@ public class Answer {
   @JoinColumn(name = "ask_id")
   private Ask ask;
 
-  @Column(nullable = false, length = 800)
+  @Column(name = "contents", nullable = false, length = 800)
   private String contents;
 
   @CreatedDate

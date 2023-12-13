@@ -15,11 +15,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.auth.token.JwtTokenProvider;
-import oxahex.asker.auth.token.JwtTokenService;
 import oxahex.asker.auth.token.JwtTokenType;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserRepository;
 import oxahex.asker.mock.MockUser;
+import oxahex.asker.utils.RedisUtil;
 
 @Transactional
 @AutoConfigureMockMvc
@@ -30,10 +30,13 @@ class JwtAuthorizationFilterTest extends MockUser {
   private MockMvc mockMvc;
 
   @Autowired
-  private JwtTokenService jwtTokenService;
+  private RedisUtil redisUtil;
 
   @Autowired
   private UserRepository userRepository;
+
+  private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;   // 24h
+
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -72,7 +75,7 @@ class JwtAuthorizationFilterTest extends MockUser {
   }
 
   @Test
-  @DisplayName("인가 성공 - Access Token이 유효하지 않은 경우 Redis, RDB에 Refresh Token이 유효하면 정상적으로 인가 처리 된다.")
+  @DisplayName("인가 성공 - Access Token이 유효하지 않은 경우 403을 반환한다.")
   public void authorize_success_refresh_token() throws Exception {
 
     // given
@@ -89,7 +92,7 @@ class JwtAuthorizationFilterTest extends MockUser {
 
     // Redis, RDB Refresh Token 저
     user.setRefreshToken(refreshToken);
-    jwtTokenService.setRefreshToken(user.getEmail(), refreshToken);
+    redisUtil.set(user.getEmail(), refreshToken, REFRESH_TOKEN_EXPIRE_TIME);
 
     // when: 없는 주소, 만료된 토큰
     ResultActions resultActions =
@@ -97,6 +100,6 @@ class JwtAuthorizationFilterTest extends MockUser {
             .header("Authorization", "Bearer " + accessToken));
 
     // then
-    resultActions.andExpect(status().isNotFound());
+    resultActions.andExpect(status().isUnauthorized());
   }
 }

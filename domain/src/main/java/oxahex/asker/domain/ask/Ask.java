@@ -37,11 +37,11 @@ public class Ask {
   @JoinColumn(name = "ask_user_id")
   private User askUser;
 
-  @Column(nullable = false, length = 800)
+  @Column(name = "contents", nullable = false, length = 800)
   private String contents;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 10)
+  @Column(name = "ask_type", nullable = false, length = 10)
   private AskType askType;
 
   @CreatedDate
@@ -57,7 +57,13 @@ public class Ask {
   ) {
 
     this.id = id;
-    this.askUser = askUser;
+
+    // 로그인 유저 질문 생성 시 해당 유저 정보 저장 및 유저 객체에 질문 객체 저장
+    if (askUser != null) {
+      this.askUser = askUser;
+      askUser.setAsk(this);
+    }
+
     this.contents = contents;
     this.askType = askType;
   }

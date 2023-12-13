@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.domain.user.UserRepository;
-import oxahex.asker.dto.auth.LoginDto.LoginReqDto;
+import oxahex.asker.auth.dto.LoginDto.LoginReqDto;
 import oxahex.asker.mock.MockUser;
 
 @AutoConfigureMockMvc
@@ -42,7 +42,7 @@ class JwtAuthenticationFilterTest extends MockUser {
   }
 
   @Test
-  @DisplayName("인증 성공 - Email, Password 일치, 가입된 회원의 경우 로그인에 성공하고 Access Token이 발급된다.")
+  @DisplayName("인증 성공 - Email, Password 일치, 가입된 회원의 경우 로그인에 성공하고 Access Token, Refresh Token이 발급된다.")
   public void authenticate_success() throws Exception {
 
     // given
@@ -58,15 +58,15 @@ class JwtAuthenticationFilterTest extends MockUser {
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody));
 
-    String accessToken = resultActions.andReturn().getResponse().getHeader("Authorization");
-
     // then
     resultActions.andExpect(status().isOk());
     resultActions.andExpect(jsonPath("$.data.name").value("test"));
     resultActions.andExpect(jsonPath("$.data.email").value("test@gmail.com"));
     resultActions.andExpect(jsonPath("$.data.role").value("USER"));
-    Assertions.assertNotNull(accessToken);
-    Assertions.assertTrue(accessToken.startsWith("Bearer "));
+
+    // Access Token, Refresh Token
+    resultActions.andExpect(jsonPath("$.data.token.accessToken").exists());
+    resultActions.andExpect(jsonPath("$.data.token.refreshToken").exists());
   }
 
   @Test

@@ -1,11 +1,10 @@
 spring:
   profiles:
-    include:
-      - secret
     group:
       develop:
-        - domain
+        - dev
+        - secret
       production:
-        - domain
+        - prod
 
     active: develop
