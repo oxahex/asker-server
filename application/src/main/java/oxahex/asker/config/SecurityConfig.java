@@ -57,11 +57,12 @@ public class SecurityConfig {
         .authorizeHttpRequests(request -> {
 
           request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
-          request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 특정 유저에게 질문
-          request.requestMatchers(HttpMethod.GET, "/api/users/**/answers/**")
-              .permitAll(); // 특정 유저의 답변 조회
+          request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();    // 질문하기 허용
+          request.requestMatchers(HttpMethod.GET, "/api/answers/**").permitAll(); // 답변 조회 허용
 
           request.requestMatchers("/api/users/**")
+              .hasAuthority(RoleType.USER.name()); // 로그인이 필요한 요청
+          request.requestMatchers("/api/asks/**")
               .hasAuthority(RoleType.USER.name()); // 로그인이 필요한 요청
           request.requestMatchers("/api/admin/**")
               .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
