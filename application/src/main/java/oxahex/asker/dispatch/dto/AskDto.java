@@ -5,9 +5,15 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import oxahex.asker.domain.ask.Ask;
+import oxahex.asker.domain.dispatch.Dispatch;
+import oxahex.asker.domain.user.User;
+import oxahex.asker.dto.user.dto.UserDto;
+import oxahex.asker.dto.user.dto.UserDto.UserAsksDto;
+import oxahex.asker.dto.user.dto.UserDto.UserInfoDto;
 
 public class AskDto {
 
@@ -43,4 +49,23 @@ public class AskDto {
     return askInfo;
   }
 
+  @Getter
+  @Setter
+  public static class ReceivedAsksDto {
+
+    private UserInfoDto userInfo;
+    private List<AskInfoDto> asks;
+  }
+
+  public static ReceivedAsksDto fromEntityToReceivedAsks(
+      User user,
+      List<Ask> asks
+  ) {
+
+    ReceivedAsksDto receivedAsks = new ReceivedAsksDto();
+    receivedAsks.setUserInfo(UserDto.fromEntityToUserInfo(user));
+    receivedAsks.setAsks(asks.stream().map(AskDto::fromEntityToAskInfo).toList());
+
+    return receivedAsks;
+  }
 }
