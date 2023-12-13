@@ -5,10 +5,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.domain.answer.Answer;
+import oxahex.asker.domain.user.User;
+import oxahex.asker.dto.user.dto.UserDto;
+import oxahex.asker.dto.user.dto.UserDto.UserInfoDto;
 
 public class AnswerDto {
 
@@ -44,5 +48,25 @@ public class AnswerDto {
     answerInfo.setCreatedDate(answer.getCreatedDateTime());
 
     return answerInfo;
+  }
+
+  @Getter
+  @Setter
+  public static class PostedAnswersDto {
+
+    private UserInfoDto answerUser;
+    private List<AnswerInfoDto> answers;
+  }
+
+  public static PostedAnswersDto fromEntityToPostedAnsweredDto(
+      User user,
+      List<Answer> answers
+  ) {
+
+    PostedAnswersDto postedAnswers = new PostedAnswersDto();
+    postedAnswers.setAnswerUser(UserDto.fromEntityToUserInfo(user));
+    postedAnswers.setAnswers(answers.stream().map(AnswerDto::fromEntityToAnswerInfo).toList());
+
+    return postedAnswers;
   }
 }

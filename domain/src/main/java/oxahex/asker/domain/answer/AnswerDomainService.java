@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.domain.dispatch.Dispatch;
+import oxahex.asker.domain.user.User;
 
 @Slf4j
 @Service
@@ -39,11 +41,14 @@ public class AnswerDomainService {
   /**
    * 답변 목록 조회
    *
-   * @param answerUserId 답변 유저 ID
+   * @param answerUser 답변한 유저
    * @return 해당 유저가 답변한 모든 질문 목록
    */
-  public List<Answer> findAnswers(Long answerUserId) {
+  public List<Answer> findAnswers(User answerUser, SortType sortType) {
 
-    return answerRepository.findAllByAnswerUser_Id(answerUserId);
+    if (sortType == SortType.DESC) {
+      return answerRepository.findAllByAnswerUserDesc(answerUser);
+    }
+    return answerRepository.findAllByAnswerUserASC(answerUser);
   }
 }
