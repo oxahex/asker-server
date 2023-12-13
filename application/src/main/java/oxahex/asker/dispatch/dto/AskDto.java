@@ -9,10 +9,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import oxahex.asker.domain.ask.Ask;
-import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.dto.user.dto.UserDto;
-import oxahex.asker.dto.user.dto.UserDto.UserAsksDto;
 import oxahex.asker.dto.user.dto.UserDto.UserInfoDto;
 
 public class AskDto {
@@ -53,7 +51,7 @@ public class AskDto {
   @Setter
   public static class ReceivedAsksDto {
 
-    private UserInfoDto userInfo;
+    private UserInfoDto answerUser;
     private List<AskInfoDto> asks;
   }
 
@@ -63,7 +61,7 @@ public class AskDto {
   ) {
 
     ReceivedAsksDto receivedAsks = new ReceivedAsksDto();
-    receivedAsks.setUserInfo(UserDto.fromEntityToUserInfo(user));
+    receivedAsks.setAnswerUser(UserDto.fromEntityToUserInfo(user));
     receivedAsks.setAsks(asks.stream().map(AskDto::fromEntityToAskInfo).toList());
 
     return receivedAsks;
