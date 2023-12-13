@@ -57,14 +57,13 @@ public class SecurityConfig {
 
     http
         .authorizeHttpRequests(request -> {
-
-          request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
-
+          
           request.requestMatchers("/api/users/**")
               .hasAuthority(RoleType.USER.name()); // 로그인이 필요한 요청
           request.requestMatchers("/api/admin/**")
               .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
 
+          request.requestMatchers("/api/**").permitAll();
           request.anyRequest().authenticated();
         });
 
