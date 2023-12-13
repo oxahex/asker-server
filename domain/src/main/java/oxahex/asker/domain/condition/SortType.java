@@ -9,7 +9,7 @@ import oxahex.asker.domain.error.type.ConditionError;
 @Getter
 @RequiredArgsConstructor
 public enum SortType {
-  
+
   ASC("asc"),
   DESC("desc");
 
@@ -23,13 +23,9 @@ public enum SortType {
    */
   public static SortType getSortType(String value) {
 
-    if (value == null || value.isEmpty()) {
-      return SortType.DESC;
-    }
-
     return Arrays.stream(SortType.values()).
         filter(x -> x.getCondition().equals(value)).findAny()
-        .orElseThrow(() -> new ConditionException(ConditionError.INVALID_SORT_TYPE));
+        .orElse(SortType.DESC);
   }
 }
 
