@@ -53,7 +53,7 @@ public class AskController {
    * @return 질문 목록
    */
   @GetMapping
-  @PreAuthorize("isAuthenticated()")
+  @PreAuthorize("hasAuthority('USER')")
   public ResponseEntity<ResponseDto<ReceivedAsksDto>> getReceivedAsks(
       @AuthenticationPrincipal AuthUser authUser,
       @PathParam("userId") Long userId,
