@@ -25,21 +25,6 @@ public class UserService {
   private final DispatchDomainService dispatchDomainService;
   private final AnswerDomainService answerDomainService;
 
-  /**
-   * 특정 유저가 받은 질문 내역 조회
-   *
-   * @param userId 유저 ID
-   * @return 받은 질문 목록
-   */
-  public UserAsksDto getReceivedAsks(Long userId) {
-
-    // 받은 질문 내역 확인
-    User answerUser = userDomainService.findUser(userId);
-    List<Dispatch> dispatches = dispatchDomainService.findDispatches(answerUser.getId());
-
-    // 질문 전송 내역에서 질문 추출, 없으면 null 반환
-    return UserDto.fromEntityToUserAsks(answerUser, dispatches);
-  }
 
   /**
    * 특정 유저의 답변 목록 조회
