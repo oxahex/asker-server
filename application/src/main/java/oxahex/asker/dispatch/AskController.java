@@ -31,6 +31,7 @@ public class AskController {
   private final DispatchService dispatchService;
 
   @PostMapping
+  @PreAuthorize("permitAll()")
   public ResponseEntity<ResponseDto<AskInfoDto>> dispatchAsk(
       @RequestBody @Valid AskDto.AskReqDto askReqDto,
       @AuthenticationPrincipal AuthUser authUser
@@ -51,14 +52,14 @@ public class AskController {
    *
    * @return 질문 목록
    */
-  @PreAuthorize("hasRole('USER')")
-  @GetMapping("?userId={userId}&sortType={sort}")
-  public ResponseEntity<?> getAsksByUser(
+  @GetMapping
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<ResponseDto<ReceivedAsksDto>> getReceivedAsks(
       @AuthenticationPrincipal AuthUser authUser,
       @PathParam("userId") Long userId,
-      @PathParam("sort") String sort
-  ) {
+      @PathParam("sort") String sort) {
 
+    log.info("[받은 질문 목록 조회] userId={}, sort={}", userId, sort);
     // 본인이 받은 질문에 대한 요청인지 검증
     ValidUtil.validateUser(authUser, userId);
 
