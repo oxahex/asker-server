@@ -1,7 +1,6 @@
 package oxahex.asker.dispatch;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -62,7 +61,7 @@ public class AnswerController {
 
     log.info("[특정 유저의 답변 목록 조회] 특정 유저 아이디={}", userId);
 
-    PostedAnswersDto postedAnswers = answerService.getPostedAnswers(userId, sortType);
+    PostedAnswersDto postedAnswers = answerService.getAnswers(userId, sortType);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", postedAnswers));
   }

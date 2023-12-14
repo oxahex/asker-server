@@ -134,7 +134,7 @@ class AskControllerTest extends MockUser {
   public void getReceivedAsks_success_with_login_user() throws Exception {
 
     // given: 받은 질문 없음
-    given(askService.getReceivedAsks(any(User.class), any(SortType.class)))
+    given(askService.getAsks(any(User.class), any(SortType.class)))
         .willReturn(new ReceivedAsksDto());
 
     // when
@@ -152,7 +152,7 @@ class AskControllerTest extends MockUser {
   public void getReceivedAsks_failure_without_login() throws Exception {
 
     // given: 받은 질문 없음
-    given(askService.getReceivedAsks(any(User.class), any(SortType.class)))
+    given(askService.getAsks(any(User.class), any(SortType.class)))
         .willReturn(new ReceivedAsksDto());
 
     // when
@@ -172,7 +172,7 @@ class AskControllerTest extends MockUser {
 
     // given
     // stub
-    given(askService.getReceivedAsks(any(User.class), any(SortType.class)))
+    given(askService.getAsks(any(User.class), any(SortType.class)))
         .willReturn(new ReceivedAsksDto());
 
     // when: 로그인 유저와 다른 유저의 질문 목록 요청
@@ -194,7 +194,7 @@ class AskControllerTest extends MockUser {
     // stub
     ReceivedAsksDto receivedAsksDto = AskDto.fromEntityToReceivedAsks(answerUser,
         new ArrayList<Ask>());
-    given(askService.getReceivedAsks(any(User.class), any(SortType.class)))
+    given(askService.getAsks(any(User.class), any(SortType.class)))
         .willReturn(receivedAsksDto);
 
     // when

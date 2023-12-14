@@ -28,7 +28,7 @@ public class AnswerService {
    * @param answerUserId 답변한 유저 ID
    * @return 답변 목록
    */
-  public PostedAnswersDto getPostedAnswers(Long answerUserId, SortType sortType) {
+  public PostedAnswersDto getAnswers(Long answerUserId, SortType sortType) {
 
     User answerUser = userDomainService.findUser(answerUserId);
 

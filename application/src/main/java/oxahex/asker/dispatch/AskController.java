@@ -1,7 +1,6 @@
 package oxahex.asker.dispatch;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -66,7 +65,7 @@ public class AskController {
     ValidUtil.validateUser(authUser, userId);
 
     ReceivedAsksDto receivedAsks =
-        askService.getReceivedAsks(authUser.getUser(), sortType);
+        askService.getAsks(authUser.getUser(), sortType);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", receivedAsks));
   }

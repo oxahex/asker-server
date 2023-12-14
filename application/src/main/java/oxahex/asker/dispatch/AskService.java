@@ -28,7 +28,7 @@ public class AskService {
    * @param user 로그인 유저
    * @return 받은 질문 목록
    */
-  public ReceivedAsksDto getReceivedAsks(User user, SortType sortType) {
+  public ReceivedAsksDto getAsks(User user, SortType sortType) {
 
     // 받은 질문 내역 확인
     User answerUser = userDomainService.findUser(user.getId());

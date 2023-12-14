@@ -134,7 +134,7 @@ class AnswerControllerTest extends MockUser {
   public void getUserAnswers_success_without_login() throws Exception {
 
     // given: 작성한 답변 없음
-    given(answerService.getPostedAnswers(anyLong(), any(SortType.class)))
+    given(answerService.getAnswers(anyLong(), any(SortType.class)))
         .willReturn(new PostedAnswersDto());
 
     // when
@@ -153,7 +153,7 @@ class AnswerControllerTest extends MockUser {
   public void getUserAnswers_success_with_login_user() throws Exception {
 
     // given: 작성한 답변 없음
-    given(answerService.getPostedAnswers(anyLong(), any(SortType.class)))
+    given(answerService.getAnswers(anyLong(), any(SortType.class)))
         .willReturn(new PostedAnswersDto());
 
     // when
@@ -175,7 +175,7 @@ class AnswerControllerTest extends MockUser {
         AnswerDto.fromEntityToPostedAnsweredDto(answerUser, new ArrayList<Answer>());
 
     // given: 작성한 답변 없음
-    given(answerService.getPostedAnswers(anyLong(), any(SortType.class)))
+    given(answerService.getAnswers(anyLong(), any(SortType.class)))
         .willReturn(postedAnswersDto);
 
     // when
