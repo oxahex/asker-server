@@ -68,7 +68,8 @@ public class AskController {
 
     // 본인이 받은 질문에 대한 요청인지 검증
     ValidUtil.validateUser(authUser, userId);
-    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortType.getDirection()));
+    PageRequest pageRequest = PageRequest.of(page, size,
+        Sort.by(sortType.getDirection(), "createdDateTime"));
 
     ReceivedAsksDto receivedAsks =
         askService.getAsks(authUser.getUser(), pageRequest);

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
@@ -53,7 +52,7 @@ public class AskDto {
   public static class ReceivedAsksDto {
 
     private UserInfoDto answerUser;
-    private List<AskInfoDto> asks;
+    private Page<AskInfoDto> asks;
   }
 
   public static ReceivedAsksDto fromEntityToReceivedAsks(
@@ -63,7 +62,7 @@ public class AskDto {
 
     ReceivedAsksDto receivedAsks = new ReceivedAsksDto();
     receivedAsks.setAnswerUser(UserDto.fromEntityToUserInfo(user));
-    receivedAsks.setAsks(asks.map(AskDto::fromEntityToAskInfo).toList());
+    receivedAsks.setAsks(asks.map(AskDto::fromEntityToAskInfo));
 
     return receivedAsks;
   }
