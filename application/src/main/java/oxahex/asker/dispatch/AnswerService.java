@@ -1,15 +1,15 @@
 package oxahex.asker.dispatch;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AnswerDto;
 import oxahex.asker.dispatch.dto.AnswerDto.PostedAnswersDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.answer.AnswerDomainService;
-import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
 
@@ -28,12 +28,12 @@ public class AnswerService {
    * @param answerUserId 답변한 유저 ID
    * @return 답변 목록
    */
-  public PostedAnswersDto getAnswers(Long answerUserId, SortType sortType) {
+  public PostedAnswersDto getAnswers(Long answerUserId, PageRequest pageRequest) {
 
     User answerUser = userDomainService.findUser(answerUserId);
 
     // Answer
-    List<Answer> answers = answerDomainService.findAnswers(answerUser, sortType.getDirection());
+    Page<Answer> answers = answerDomainService.findAnswers(answerUser, pageRequest);
 
     // 질문 전송 내역에서 질문 추출, 없으면 null 반환
     return AnswerDto.fromEntityToPostedAnsweredDto(answerUser, answers);

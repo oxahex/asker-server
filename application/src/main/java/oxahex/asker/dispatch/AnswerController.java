@@ -3,6 +3,8 @@ package oxahex.asker.dispatch;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,12 +58,16 @@ public class AnswerController {
   @PreAuthorize("permitAll()")
   public ResponseEntity<ResponseDto<?>> getAnswers(
       @RequestParam Long userId,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "10") Integer size,
       @RequestParam(defaultValue = "desc") SortType sortType
   ) {
 
     log.info("[특정 유저의 답변 목록 조회] 특정 유저 아이디={}", userId);
 
-    PostedAnswersDto postedAnswers = answerService.getAnswers(userId, sortType);
+    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortType.getDirection()));
+
+    PostedAnswersDto postedAnswers = answerService.getAnswers(userId, pageRequest);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", postedAnswers));
   }

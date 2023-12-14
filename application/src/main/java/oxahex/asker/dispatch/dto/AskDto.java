@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.dto.user.dto.UserDto;
@@ -57,12 +58,12 @@ public class AskDto {
 
   public static ReceivedAsksDto fromEntityToReceivedAsks(
       User user,
-      List<Ask> asks
+      Page<Ask> asks
   ) {
 
     ReceivedAsksDto receivedAsks = new ReceivedAsksDto();
     receivedAsks.setAnswerUser(UserDto.fromEntityToUserInfo(user));
-    receivedAsks.setAsks(asks.stream().map(AskDto::fromEntityToAskInfo).toList());
+    receivedAsks.setAsks(asks.map(AskDto::fromEntityToAskInfo).toList());
 
     return receivedAsks;
   }

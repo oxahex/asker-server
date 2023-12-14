@@ -3,6 +3,8 @@ package oxahex.asker.domain.answer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -45,8 +47,8 @@ public class AnswerDomainService {
    * @param answerUser 답변한 유저
    * @return 해당 유저가 답변한 모든 질문 목록
    */
-  public List<Answer> findAnswers(User answerUser, Direction direction) {
+  public Page<Answer> findAnswers(User answerUser, PageRequest pageRequest) {
 
-    return answerRepository.findAllByUser(answerUser, Sort.by(direction));
+    return answerRepository.findAllByUser(answerUser, pageRequest);
   }
 }

@@ -3,6 +3,8 @@ package oxahex.asker.dispatch;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,15 +59,19 @@ public class AskController {
   public ResponseEntity<ResponseDto<ReceivedAsksDto>> getReceivedAsks(
       @AuthenticationPrincipal AuthUser authUser,
       @RequestParam Long userId,
-      @RequestParam(defaultValue = "desc") SortType sortType) {
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "10") Integer size,
+      @RequestParam(defaultValue = "desc") SortType sortType
+  ) {
 
     log.info("[받은 질문 목록 조회] userId={}, sort={}", userId, sortType.getCondition());
 
     // 본인이 받은 질문에 대한 요청인지 검증
     ValidUtil.validateUser(authUser, userId);
+    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortType.getDirection()));
 
     ReceivedAsksDto receivedAsks =
-        askService.getAsks(authUser.getUser(), sortType);
+        askService.getAsks(authUser.getUser(), pageRequest);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", receivedAsks));
   }
