@@ -50,7 +50,7 @@ public class NotificationDomainService {
         .notificationType(NotificationType.ANSWER)
         .originId(answer.getId())
         .originUserId(answer.getAnswerUser().getId())
-        .excerpt(answer.getContents().substring(0, 16))
+        .excerpt(answer.getContents().substring(0, 10).trim())
         .build();
 
     notificationRepository.save(notification);
