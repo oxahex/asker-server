@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -26,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AskDto;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.dispatch.dto.AskDto.AskReqDto;
-import oxahex.asker.dispatch.dto.AskDto.ReceivedAsksDto;
+import oxahex.asker.dispatch.dto.AskDto.AskListDto;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskType;
 import oxahex.asker.domain.condition.SortType;
@@ -134,13 +135,13 @@ class AskControllerTest extends MockUser {
   public void getReceivedAsks_success_with_login_user() throws Exception {
 
     // given: 받은 질문 없음
-    given(askService.getAsks(any(User.class), any(SortType.class)))
-        .willReturn(new ReceivedAsksDto());
+    given(askService.getAsks(any(User.class), any(PageRequest.class)))
+        .willReturn(new AskListDto());
 
     // when
     ResultActions resultActions = mockMvc.perform(get("/api/asks")
         .param("userId", String.valueOf(answerUser.getId()))
-        .param("sort", SortType.DESC.name())
+        .param("sortType", SortType.DESC.name())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -152,13 +153,13 @@ class AskControllerTest extends MockUser {
   public void getReceivedAsks_failure_without_login() throws Exception {
 
     // given: 받은 질문 없음
-    given(askService.getAsks(any(User.class), any(SortType.class)))
-        .willReturn(new ReceivedAsksDto());
+    given(askService.getAsks(any(User.class), any(PageRequest.class)))
+        .willReturn(new AskListDto());
 
     // when
     ResultActions resultActions = mockMvc.perform(get("/api/asks")
         .param("userId", String.valueOf(answerUser.getId()))
-        .param("sort", SortType.DESC.name())
+        .param("sortType", SortType.DESC.name())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -172,13 +173,13 @@ class AskControllerTest extends MockUser {
 
     // given
     // stub
-    given(askService.getAsks(any(User.class), any(SortType.class)))
-        .willReturn(new ReceivedAsksDto());
+    given(askService.getAsks(any(User.class), any(PageRequest.class)))
+        .willReturn(new AskListDto());
 
     // when: 로그인 유저와 다른 유저의 질문 목록 요청
     ResultActions resultActions = mockMvc.perform(get("/api/asks")
         .param("userId", String.valueOf(answerUser.getId() + 1))
-        .param("sort", SortType.DESC.name())
+        .param("sortType", SortType.DESC.name())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -192,15 +193,14 @@ class AskControllerTest extends MockUser {
 
     // given: 받은 질문 없음
     // stub
-    ReceivedAsksDto receivedAsksDto = AskDto.fromEntityToReceivedAsks(answerUser,
-        new ArrayList<Ask>());
-    given(askService.getAsks(any(User.class), any(SortType.class)))
+    AskListDto receivedAsksDto = AskDto.fromEntityToReceivedAsks(answerUser, Page.empty());
+    given(askService.getAsks(any(User.class), any(PageRequest.class)))
         .willReturn(receivedAsksDto);
 
     // when
     ResultActions resultActions = mockMvc.perform(get("/api/asks")
         .param("userId", String.valueOf(answerUser.getId()))
-        .param("sort", SortType.DESC.name())
+        .param("sortType", SortType.DESC.name())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -208,7 +208,7 @@ class AskControllerTest extends MockUser {
     resultActions.andExpect(jsonPath("$.data.answerUser.id").value(answerUser.getId()));
     resultActions.andExpect(jsonPath("$.data.answerUser.name").value(answerUser.getName()));
     // 질문 목록은 Empty List
-    resultActions.andExpect(jsonPath("$.data.asks").isArray());
-    resultActions.andExpect(jsonPath("$.data.asks").isEmpty());
+    resultActions.andExpect(jsonPath("$.data.asks.content").isArray());
+    resultActions.andExpect(jsonPath("$.data.asks.empty").value(true));
   }
 }

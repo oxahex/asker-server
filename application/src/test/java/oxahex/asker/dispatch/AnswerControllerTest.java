@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -27,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AnswerDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerReqDto;
-import oxahex.asker.dispatch.dto.AnswerDto.PostedAnswersDto;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskType;
@@ -134,13 +136,13 @@ class AnswerControllerTest extends MockUser {
   public void getUserAnswers_success_without_login() throws Exception {
 
     // given: 작성한 답변 없음
-    given(answerService.getAnswers(anyLong(), any(SortType.class)))
-        .willReturn(new PostedAnswersDto());
+    given(answerService.getAnswers(anyLong(), any(PageRequest.class)))
+        .willReturn(new AnswerListDto());
 
     // when
     ResultActions resultActions = mockMvc.perform(get("/api/answers")
         .param("userId", answerUser.getId().toString())
-        .param("sort", SortType.DESC.getCondition())
+        .param("sortType", SortType.DESC.getCondition())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -153,13 +155,13 @@ class AnswerControllerTest extends MockUser {
   public void getUserAnswers_success_with_login_user() throws Exception {
 
     // given: 작성한 답변 없음
-    given(answerService.getAnswers(anyLong(), any(SortType.class)))
-        .willReturn(new PostedAnswersDto());
+    given(answerService.getAnswers(anyLong(), any(PageRequest.class)))
+        .willReturn(new AnswerListDto());
 
     // when
     ResultActions resultActions = mockMvc.perform(get("/api/answers")
         .param("userId", answerUser.getId().toString())
-        .param("sort", SortType.DESC.getCondition())
+        .param("sortType", SortType.DESC.getCondition())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -171,17 +173,17 @@ class AnswerControllerTest extends MockUser {
   public void getUserAnswers_success_if_null() throws Exception {
 
     // given: 받은 질문 없음
-    PostedAnswersDto postedAnswersDto =
-        AnswerDto.fromEntityToPostedAnsweredDto(answerUser, new ArrayList<Answer>());
+    AnswerListDto postedAnswersDto =
+        AnswerDto.fromEntityToPostedAnsweredDto(answerUser, Page.empty());
 
     // given: 작성한 답변 없음
-    given(answerService.getAnswers(anyLong(), any(SortType.class)))
+    given(answerService.getAnswers(anyLong(), any(PageRequest.class)))
         .willReturn(postedAnswersDto);
 
     // when
     ResultActions resultActions = mockMvc.perform(get("/api/answers")
         .param("userId", answerUser.getId().toString())
-        .param("sort", SortType.DESC.getCondition())
+        .param("sortType", SortType.DESC.getCondition())
         .contentType(MediaType.APPLICATION_JSON));
 
     // then
@@ -189,7 +191,7 @@ class AnswerControllerTest extends MockUser {
     resultActions.andExpect(jsonPath("$.data.answerUser.id").value(answerUser.getId()));
     resultActions.andExpect(jsonPath("$.data.answerUser.name").value(answerUser.getName()));
     // 질문 목록은 Empty List
-    resultActions.andExpect(jsonPath("$.data.answers").isArray());
-    resultActions.andExpect(jsonPath("$.data.answers").isEmpty());
+    resultActions.andExpect(jsonPath("$.data.answers.content").isArray());
+    resultActions.andExpect(jsonPath("$.data.answers.empty").value(true));
   }
 }
