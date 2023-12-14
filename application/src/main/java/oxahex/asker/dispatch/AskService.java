@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AskDto;
-import oxahex.asker.dispatch.dto.AskDto.ReceivedAsksDto;
+import oxahex.asker.dispatch.dto.AskDto.AskListDto;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskDomainService;
 import oxahex.asker.domain.user.User;
@@ -28,7 +28,7 @@ public class AskService {
    * @param user 로그인 유저
    * @return 받은 질문 목록
    */
-  public ReceivedAsksDto getAsks(User user, PageRequest pageRequest) {
+  public AskListDto getAsks(User user, PageRequest pageRequest) {
 
     // 받은 질문 내역 확인
     User answerUser = userDomainService.findUser(user.getId());

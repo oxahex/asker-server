@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.dispatch.dto.AskDto;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
-import oxahex.asker.dispatch.dto.AskDto.ReceivedAsksDto;
+import oxahex.asker.dispatch.dto.AskDto.AskListDto;
 import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.dto.ResponseDto;
 import oxahex.asker.utils.ValidUtil;
@@ -56,7 +56,7 @@ public class AskController {
    */
   @GetMapping
   @PreAuthorize("hasAuthority('USER')")
-  public ResponseEntity<ResponseDto<ReceivedAsksDto>> getReceivedAsks(
+  public ResponseEntity<ResponseDto<AskListDto>> getReceivedAsks(
       @AuthenticationPrincipal AuthUser authUser,
       @RequestParam Long userId,
       @RequestParam(defaultValue = "0") Integer page,
@@ -71,7 +71,7 @@ public class AskController {
     PageRequest pageRequest = PageRequest.of(page, size,
         Sort.by(sortType.getDirection(), "createdDateTime"));
 
-    ReceivedAsksDto receivedAsks =
+    AskListDto receivedAsks =
         askService.getAsks(authUser.getUser(), pageRequest);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", receivedAsks));

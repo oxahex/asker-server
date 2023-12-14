@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.dispatch.dto.AnswerDto;
-import oxahex.asker.dispatch.dto.AnswerDto.PostedAnswersDto;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.answer.AnswerDomainService;
 import oxahex.asker.domain.user.User;
@@ -28,7 +28,7 @@ public class AnswerService {
    * @param answerUserId 답변한 유저 ID
    * @return 답변 목록
    */
-  public PostedAnswersDto getAnswers(Long answerUserId, PageRequest pageRequest) {
+  public AnswerListDto getAnswers(Long answerUserId, PageRequest pageRequest) {
 
     User answerUser = userDomainService.findUser(answerUserId);
 

@@ -49,18 +49,18 @@ public class AskDto {
 
   @Getter
   @Setter
-  public static class ReceivedAsksDto {
+  public static class AskListDto {
 
     private UserInfoDto answerUser;
     private Page<AskInfoDto> asks;
   }
 
-  public static ReceivedAsksDto fromEntityToReceivedAsks(
+  public static AskListDto fromEntityToReceivedAsks(
       User user,
       Page<Ask> asks
   ) {
 
-    ReceivedAsksDto receivedAsks = new ReceivedAsksDto();
+    AskListDto receivedAsks = new AskListDto();
     receivedAsks.setAnswerUser(UserDto.fromEntityToUserInfo(user));
     receivedAsks.setAsks(asks.map(AskDto::fromEntityToAskInfo));
 

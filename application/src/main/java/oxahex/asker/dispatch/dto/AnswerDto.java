@@ -52,18 +52,18 @@ public class AnswerDto {
 
   @Getter
   @Setter
-  public static class PostedAnswersDto {
+  public static class AnswerListDto {
 
     private UserInfoDto answerUser;
     private Page<AnswerInfoDto> answers;
   }
 
-  public static PostedAnswersDto fromEntityToPostedAnsweredDto(
+  public static AnswerListDto fromEntityToPostedAnsweredDto(
       User user,
       Page<Answer> answers
   ) {
 
-    PostedAnswersDto postedAnswers = new PostedAnswersDto();
+    AnswerListDto postedAnswers = new AnswerListDto();
     postedAnswers.setAnswerUser(UserDto.fromEntityToUserInfo(user));
     postedAnswers.setAnswers(answers.map(AnswerDto::fromEntityToAnswerInfo));
 

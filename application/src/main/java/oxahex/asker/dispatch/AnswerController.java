@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.dispatch.dto.AnswerDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
-import oxahex.asker.dispatch.dto.AnswerDto.PostedAnswersDto;
+import oxahex.asker.dispatch.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.dto.ResponseDto;
 
@@ -67,7 +67,7 @@ public class AnswerController {
 
     PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortType.getDirection()));
 
-    PostedAnswersDto postedAnswers = answerService.getAnswers(userId, pageRequest);
+    AnswerListDto postedAnswers = answerService.getAnswers(userId, pageRequest);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", postedAnswers));
   }
