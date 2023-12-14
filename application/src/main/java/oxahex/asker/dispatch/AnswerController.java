@@ -65,7 +65,8 @@ public class AnswerController {
 
     log.info("[특정 유저의 답변 목록 조회] 특정 유저 아이디={}", userId);
 
-    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortType.getDirection()));
+    PageRequest pageRequest = PageRequest.of(page, size,
+        Sort.by(sortType.getDirection(), "createdDateTime"));
 
     AnswerListDto postedAnswers = answerService.getAnswers(userId, pageRequest);
 
