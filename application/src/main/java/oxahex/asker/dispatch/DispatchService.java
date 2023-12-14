@@ -1,6 +1,7 @@
 package oxahex.asker.dispatch;
 
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.ask.AskDomainService;
 import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.dispatch.DispatchDomainService;
+import oxahex.asker.domain.notification.NotificationDomainService;
 import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
 import oxahex.asker.error.exception.ServiceException;
@@ -33,22 +35,27 @@ public class DispatchService {
   private final AskDomainService askDomainService;
   private final AnswerDomainService answerDomainService;
   private final DispatchDomainService dispatchDomainService;
+  private final NotificationDomainService notificationDomainService;
 
   @Transactional
   public AskInfoDto dispatchAsk(AuthUser authUser, AskReqDto askReqDto) {
 
     log.info("[DispatchService] 유저 질문");
+
     // 익명 질문인 경우 null
-    User askUser = null;
-    if (authUser != null) {
-      askUser = userDomainService.findUser(authUser.getUser().getId());
-    }
+    User askUser = Optional.ofNullable(authUser)
+        .map(it -> userDomainService.findUser(it.getUser().getId()))
+        .orElse(null);
 
     // 질문 생성
     Ask ask = askDomainService.createAsk(askUser, askReqDto.getContents());
 
     // 디스패치 생성
-    dispatchDomainService.createAskDispatch(askReqDto.getAnswerUserId(), ask);
+    Dispatch dispatch = dispatchDomainService
+        .createAskDispatch(askReqDto.getAnswerUserId(), ask);
+
+    // 질문 생성 시 알림 데이터 저장
+    notificationDomainService.createNotification(dispatch.getAnswerUser(), ask);
 
     return AskDto.fromEntityToAskInfo(ask);
   }
@@ -72,6 +79,11 @@ public class DispatchService {
     // 답변 생성
     Answer answer =
         answerDomainService.createAnswer(dispatch, answerReqDto.getContents());
+
+    // 로그인한 질문자인 경우 답변 생성 시 알림 생성
+    if (ask.getAskUser() != null) {
+      notificationDomainService.createNotification(ask.getAskUser(), answer);
+    }
 
     return AnswerDto.fromEntityToAnswerInfo(answer);
   }

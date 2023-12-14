@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.domain.error.exception.DispatchException;
 import oxahex.asker.domain.error.type.DispatchError;
+import oxahex.asker.domain.notification.NotificationRepository;
 import oxahex.asker.domain.user.User;
 
 @Slf4j
