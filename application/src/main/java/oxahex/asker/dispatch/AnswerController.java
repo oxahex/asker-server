@@ -54,7 +54,7 @@ public class AnswerController {
    */
   @GetMapping
   @PreAuthorize("permitAll()")
-  public ResponseEntity<ResponseDto<?>> getUserAnswers(
+  public ResponseEntity<ResponseDto<?>> getAnswers(
       @RequestParam Long userId,
       @RequestParam(defaultValue = "desc") SortType sortType
   ) {
