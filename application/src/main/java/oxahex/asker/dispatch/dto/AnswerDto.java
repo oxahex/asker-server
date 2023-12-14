@@ -11,8 +11,8 @@ import org.springframework.data.domain.Page;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.user.User;
-import oxahex.asker.dto.user.dto.UserDto;
-import oxahex.asker.dto.user.dto.UserDto.UserInfoDto;
+import oxahex.asker.auth.dto.UserDto;
+import oxahex.asker.auth.dto.UserDto.UserInfoDto;
 
 public class AnswerDto {
 

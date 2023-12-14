@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.auth.dto.TokenDto;
-import oxahex.asker.dto.ResponseDto;
+import oxahex.asker.common.ResponseDto;
 import oxahex.asker.auth.dto.JoinDto.JoinReqDto;
 import oxahex.asker.auth.dto.JoinDto.JoinResDto;
 

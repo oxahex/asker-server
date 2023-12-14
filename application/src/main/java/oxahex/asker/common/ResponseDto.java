@@ -1,4 +1,4 @@
-package oxahex.asker.dto;
+package oxahex.asker.common;
 
 import lombok.Builder;
 import lombok.Getter;

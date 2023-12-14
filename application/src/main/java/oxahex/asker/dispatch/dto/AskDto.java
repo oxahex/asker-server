@@ -10,8 +10,8 @@ import lombok.Setter;
 import org.springframework.data.domain.Page;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.user.User;
-import oxahex.asker.dto.user.dto.UserDto;
-import oxahex.asker.dto.user.dto.UserDto.UserInfoDto;
+import oxahex.asker.auth.dto.UserDto;
+import oxahex.asker.auth.dto.UserDto.UserInfoDto;
 
 public class AskDto {
 

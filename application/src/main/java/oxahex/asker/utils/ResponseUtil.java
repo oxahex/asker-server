@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import oxahex.asker.dto.ResponseDto;
+import oxahex.asker.common.ResponseDto;
 
 @Slf4j
 public class ResponseUtil {

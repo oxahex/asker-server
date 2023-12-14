@@ -20,7 +20,7 @@ import oxahex.asker.dispatch.dto.AskDto;
 import oxahex.asker.dispatch.dto.AskDto.AskInfoDto;
 import oxahex.asker.dispatch.dto.AskDto.AskListDto;
 import oxahex.asker.domain.condition.SortType;
-import oxahex.asker.dto.ResponseDto;
+import oxahex.asker.common.ResponseDto;
 import oxahex.asker.utils.ValidUtil;
 
 @Slf4j
