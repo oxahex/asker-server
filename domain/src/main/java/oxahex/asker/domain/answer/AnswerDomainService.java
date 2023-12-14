@@ -3,9 +3,10 @@ package oxahex.asker.domain.answer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.user.User;
 
@@ -44,11 +45,8 @@ public class AnswerDomainService {
    * @param answerUser 답변한 유저
    * @return 해당 유저가 답변한 모든 질문 목록
    */
-  public List<Answer> findAnswers(User answerUser, SortType sortType) {
+  public List<Answer> findAnswers(User answerUser, Direction direction) {
 
-    if (sortType == SortType.DESC) {
-      return answerRepository.findAllByAnswerUserDesc(answerUser);
-    }
-    return answerRepository.findAllByAnswerUserASC(answerUser);
+    return answerRepository.findAllByUser(answerUser, Sort.by(direction));
   }
 }

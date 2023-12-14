@@ -1,6 +1,7 @@
 package oxahex.asker.domain.ask;
 
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,8 +12,5 @@ import oxahex.asker.domain.user.User;
 public interface AskRepository extends JpaRepository<Ask, Long> {
 
   @Query("select a from Ask as a join Dispatch as d on a.id = d.id where d.answerUser = :user order by a.createdDateTime desc")
-  List<Ask> findAllByAnswerUserDesc(@Param("user") User user);
-
-  @Query("select a from Ask as a join Dispatch as d on a.id = d.id where d.answerUser = :user order by a.createdDateTime asc")
-  List<Ask> findAllByAnswerUserAsc(@Param("user") User user);
+  List<Ask> findAllByUser(@Param("user") User user, Sort sort);
 }

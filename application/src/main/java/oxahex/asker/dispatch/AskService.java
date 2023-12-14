@@ -34,7 +34,7 @@ public class AskService {
     User answerUser = userDomainService.findUser(user.getId());
 
     // ASK
-    List<Ask> asks = askDomainService.findAsks(answerUser, sortType);
+    List<Ask> asks = askDomainService.findAsks(answerUser, sortType.getDirection());
 
     // 질문 전송 내역에서 질문 추출, 없으면 null 반환
     return AskDto.fromEntityToReceivedAsks(answerUser, asks);

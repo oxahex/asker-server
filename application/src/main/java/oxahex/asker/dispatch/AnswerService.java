@@ -33,7 +33,7 @@ public class AnswerService {
     User answerUser = userDomainService.findUser(answerUserId);
 
     // Answer
-    List<Answer> answers = answerDomainService.findAnswers(answerUser, sortType);
+    List<Answer> answers = answerDomainService.findAnswers(answerUser, sortType.getDirection());
 
     // 질문 전송 내역에서 질문 추출, 없으면 null 반환
     return AnswerDto.fromEntityToPostedAnsweredDto(answerUser, answers);

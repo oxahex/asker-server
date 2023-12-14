@@ -3,9 +3,10 @@ package oxahex.asker.domain.ask;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.domain.error.exception.DispatchException;
 import oxahex.asker.domain.error.type.DispatchError;
 import oxahex.asker.domain.user.User;
@@ -18,7 +19,6 @@ import oxahex.asker.domain.user.UserDomainService;
 public class AskDomainService {
 
   private final AskRepository askRepository;
-  private final UserDomainService userDomainService;
 
 
   /**
@@ -51,12 +51,8 @@ public class AskDomainService {
         .orElseThrow(() -> new DispatchException(DispatchError.ASK_NOT_FOUND));
   }
 
-  public List<Ask> findAsks(User user, SortType sortType) {
+  public List<Ask> findAsks(User user, Direction direction) {
 
-    if (sortType == SortType.ASC) {
-      return askRepository.findAllByAnswerUserAsc(user);
-    }
-
-    return askRepository.findAllByAnswerUserDesc(user);
+    return askRepository.findAllByUser(user, Sort.by(direction));
   }
 }
