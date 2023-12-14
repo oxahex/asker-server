@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.auth.AuthUser;
 import oxahex.asker.dispatch.dto.AnswerDto;
@@ -55,13 +56,12 @@ public class AnswerController {
   @GetMapping
   @PreAuthorize("permitAll()")
   public ResponseEntity<ResponseDto<?>> getUserAnswers(
-      @PathParam("userId") Long userId,
-      @PathParam("sort") String sort
+      @RequestParam Long userId,
+      @RequestParam(defaultValue = "desc") SortType sortType
   ) {
 
     log.info("[특정 유저의 답변 목록 조회] 특정 유저 아이디={}", userId);
 
-    SortType sortType = SortType.getSortType(sort);
     PostedAnswersDto postedAnswers = answerService.getPostedAnswers(userId, sortType);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", postedAnswers));
