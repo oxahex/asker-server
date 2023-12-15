@@ -1,13 +1,14 @@
 package oxahex.asker.domain.notification;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.ask.Ask;
-import oxahex.asker.domain.dispatch.Dispatch;
 import oxahex.asker.domain.user.User;
 
 @Slf4j
@@ -54,6 +55,11 @@ public class NotificationDomainService {
         .build();
 
     notificationRepository.save(notification);
+  }
+
+  public Slice<Notification> findNotifications(User user, PageRequest pageRequest) {
+
+    return notificationRepository.findAllUnReadNotification(user, pageRequest);
   }
 
 }
