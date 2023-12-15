@@ -1,6 +1,5 @@
 package oxahex.asker.domain.notification;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.domain.answer.Answer;
 import oxahex.asker.domain.ask.Ask;
+import oxahex.asker.domain.error.exception.NotificationException;
+import oxahex.asker.domain.error.type.NotificationError;
 import oxahex.asker.domain.user.User;
 
 @Slf4j
@@ -62,4 +63,15 @@ public class NotificationDomainService {
     return notificationRepository.findAllUnReadNotification(user, pageRequest);
   }
 
+  /**
+   * 알림 상세 조회
+   *
+   * @param notificationId 조회하려는 알림 ID
+   * @return 해당 알림 데이터
+   */
+  public Notification findNotification(Long notificationId) {
+
+    return notificationRepository.findById(notificationId)
+        .orElseThrow(() -> new NotificationException(NotificationError.NOTIFICATION_NOT_FOUND));
+  }
 }

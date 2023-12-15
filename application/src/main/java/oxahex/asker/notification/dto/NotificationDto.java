@@ -13,6 +13,7 @@ import oxahex.asker.dispatch.dto.AskDto.AskListDto;
 import oxahex.asker.domain.ask.Ask;
 import oxahex.asker.domain.notification.Notification;
 import oxahex.asker.domain.notification.NotificationFrontMatter;
+import oxahex.asker.domain.notification.NotificationType;
 import oxahex.asker.domain.user.User;
 
 public class NotificationDto {
@@ -23,6 +24,8 @@ public class NotificationDto {
 
     private Long id;
     private NotificationFrontMatter frontMatter;
+    private NotificationType notificationType;
+    private LocalDateTime readDate;
     private LocalDateTime createdDate;
   }
 
@@ -31,10 +34,13 @@ public class NotificationDto {
     NotificationInfoDto notificationInfo = new NotificationInfoDto();
     notificationInfo.setId(notification.getId());
     notificationInfo.setFrontMatter(notification.getFrontMatter());
+    notificationInfo.setNotificationType(notification.getNotificationType());
+    notificationInfo.setReadDate(notification.getReadDateTime());
     notificationInfo.setCreatedDate(notification.getCreatedDateTime());
 
     return notificationInfo;
   }
+
 
   @Getter
   @Setter

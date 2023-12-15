@@ -73,4 +73,8 @@ public class Notification {
         .originUserId(originUserId)
         .excerpt(excerpt).build();
   }
+
+  public void read() {
+    this.readDateTime = LocalDateTime.now();
+  }
 }
