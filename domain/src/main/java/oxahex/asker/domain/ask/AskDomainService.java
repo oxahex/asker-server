@@ -2,12 +2,13 @@ package oxahex.asker.domain.ask;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.domain.error.exception.DispatchException;
 import oxahex.asker.domain.error.type.DispatchError;
 import oxahex.asker.domain.user.User;
-import oxahex.asker.domain.user.UserDomainService;
 
 @Slf4j
 @Service
@@ -16,7 +17,6 @@ import oxahex.asker.domain.user.UserDomainService;
 public class AskDomainService {
 
   private final AskRepository askRepository;
-  private final UserDomainService userDomainService;
 
 
   /**
@@ -49,4 +49,8 @@ public class AskDomainService {
         .orElseThrow(() -> new DispatchException(DispatchError.ASK_NOT_FOUND));
   }
 
+  public Page<Ask> findAsks(User user, PageRequest pageRequest) {
+
+    return askRepository.findAllByUser(user, pageRequest);
+  }
 }

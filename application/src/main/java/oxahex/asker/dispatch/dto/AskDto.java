@@ -7,7 +7,11 @@ import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import oxahex.asker.domain.ask.Ask;
+import oxahex.asker.domain.user.User;
+import oxahex.asker.auth.dto.UserDto;
+import oxahex.asker.auth.dto.UserDto.UserInfoDto;
 
 public class AskDto {
 
@@ -43,4 +47,23 @@ public class AskDto {
     return askInfo;
   }
 
+  @Getter
+  @Setter
+  public static class AskListDto {
+
+    private UserInfoDto answerUser;
+    private Page<AskInfoDto> asks;
+  }
+
+  public static AskListDto fromEntityToReceivedAsks(
+      User user,
+      Page<Ask> asks
+  ) {
+
+    AskListDto receivedAsks = new AskListDto();
+    receivedAsks.setAnswerUser(UserDto.fromEntityToUserInfo(user));
+    receivedAsks.setAsks(asks.map(AskDto::fromEntityToAskInfo));
+
+    return receivedAsks;
+  }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import oxahex.asker.domain.error.exception.DispatchException;
 import oxahex.asker.domain.error.exception.UserException;
-import oxahex.asker.dto.ResponseDto;
+import oxahex.asker.common.ResponseDto;
 import oxahex.asker.error.exception.ServiceException;
 import oxahex.asker.error.exception.ValidationException;
 

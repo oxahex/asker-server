@@ -3,9 +3,14 @@ package oxahex.asker.domain.answer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.domain.dispatch.Dispatch;
+import oxahex.asker.domain.user.User;
 
 @Slf4j
 @Service
@@ -39,11 +44,11 @@ public class AnswerDomainService {
   /**
    * 답변 목록 조회
    *
-   * @param answerUserId 답변 유저 ID
+   * @param answerUser 답변한 유저
    * @return 해당 유저가 답변한 모든 질문 목록
    */
-  public List<Answer> findAnswers(Long answerUserId) {
+  public Page<Answer> findAnswers(User answerUser, PageRequest pageRequest) {
 
-    return answerRepository.findAllByAnswerUser_Id(answerUserId);
+    return answerRepository.findAllByUser(answerUser, pageRequest);
   }
 }

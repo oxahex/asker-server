@@ -1,4 +1,4 @@
-package oxahex.asker.dto.user.dto;
+package oxahex.asker.auth.dto;
 
 import java.util.List;
 import lombok.Getter;

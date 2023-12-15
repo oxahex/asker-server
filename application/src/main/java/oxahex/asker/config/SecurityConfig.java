@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,6 +31,7 @@ import oxahex.asker.utils.RedisUtil;
 @Slf4j
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -55,17 +57,13 @@ public class SecurityConfig {
 
     http
         .authorizeHttpRequests(request -> {
-
-          request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll(); // 회원가입, 로그인, 로그아웃
-          request.requestMatchers(HttpMethod.POST, "/api/asks").permitAll();  // 특정 유저에게 질문
-          request.requestMatchers(HttpMethod.GET, "/api/users/**/answers/**")
-              .permitAll(); // 특정 유저의 답변 조회
-
+          
           request.requestMatchers("/api/users/**")
               .hasAuthority(RoleType.USER.name()); // 로그인이 필요한 요청
           request.requestMatchers("/api/admin/**")
               .hasAuthority(RoleType.ADMIN.name()); // 회원 개인 정보 관련
 
+          request.requestMatchers("/api/**").permitAll();
           request.anyRequest().authenticated();
         });
 
