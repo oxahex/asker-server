@@ -22,6 +22,9 @@ import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
 import oxahex.asker.error.exception.ServiceException;
 import oxahex.asker.error.type.ServiceError;
+import oxahex.asker.search.AnswerDocument;
+import oxahex.asker.search.SearchRepository;
+import oxahex.asker.search.SearchService;
 
 @Slf4j
 @Service
@@ -33,6 +36,8 @@ public class DispatchService {
   private final AskDomainService askDomainService;
   private final AnswerDomainService answerDomainService;
   private final DispatchDomainService dispatchDomainService;
+  private final SearchService searchService;
+
 
   @Transactional
   public AskInfoDto dispatchAsk(AuthUser authUser, AskReqDto askReqDto) {
@@ -72,6 +77,9 @@ public class DispatchService {
     // 답변 생성
     Answer answer =
         answerDomainService.createAnswer(dispatch, answerReqDto.getContents());
+
+    // ElasticSearch 저장
+    searchService.saveAnswer(ask, answer);
 
     return AnswerDto.fromEntityToAnswerInfo(answer);
   }

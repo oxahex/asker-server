@@ -1,6 +1,7 @@
 package oxahex.asker.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ import oxahex.asker.domain.condition.converter.SortTypeConverter;
 @Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-  
+
   @Override
   public void addFormatters(FormatterRegistry registry) {
     registry.addConverter(new SortTypeConverter());
@@ -30,7 +31,9 @@ public class WebConfig implements WebMvcConfigurer {
   public ObjectMapper objectMapper() {
 
     log.debug("[ObjectMapper] Bean 등록");
-    return new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    return objectMapper;
   }
 
 }
