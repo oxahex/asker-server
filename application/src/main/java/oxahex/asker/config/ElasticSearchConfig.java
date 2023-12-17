@@ -9,24 +9,12 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchClients;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.client.erhlc.RestClients.ElasticsearchRestClient;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories
 @RequiredArgsConstructor
 public class ElasticSearchConfig {
 
   private static final String ES_URL = "http://localhost:9200";
-
-  public ClientConfiguration clientConfiguration() {
-    return ClientConfiguration.builder()
-        .connectedTo("localhost:9200")
-        .build();
-  }
 
   @Bean
   public ElasticsearchClient elasticsearchClient() {

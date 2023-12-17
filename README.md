@@ -113,18 +113,6 @@ V1에서는 최소 기능을 구현합니다.
 1. **유저 정보 조회**
     - `GET /users/{userId}`
     - JWT Authorization 후 유효성 통과 시 조회
-2. **특정 유저에게 들어온 질문 목록 조회**
-    - `GET /users/{userId}/asks?sort={sortType}`
-    - JWT Authorization 후 유효성 통과 시 조회
-    - `sortType`
-        - DESC(최신 순서) - sortType 없을 때 기본값
-        - ASC(들어온 순서)
-3. **특정 유저의 답변 목록 조회**
-    - `GET /users/{userId}/answers?sort={sortType}`
-    - `sortType`
-        - DESC(최신 순서) - sortType 없을 때 기본값
-        - ASC(들어온 순서)
-    - 권한 검증 X, 모든 접속자에게 공개
 
 #### 질문
 
@@ -136,6 +124,12 @@ V1에서는 최소 기능을 구현합니다.
           "contents": "질문 내용"
         }
       ```
+2. **특정 유저에게 들어온 질문 목록 조회**
+    - `GET /asks?userId={userId}&sort={sortType}`
+    - JWT Authorization 후 유효성 통과 시 조회
+    - `sortType`
+        - DESC(최신 순서) - sortType 없을 때 기본값
+        - ASC(들어온 순서)
 
 #### 답변
 
@@ -149,7 +143,14 @@ V1에서는 최소 기능을 구현합니다.
       "except": "질문 내용 앞 20글자"
    }
    ```
-2. **특정 답변 조회(공유 등)**
+2. **특정 유저의 답변 목록 조회**
+    - `GET /answers/userId={userId}&sort={sortType}`
+    - `sortType`
+        - DESC(최신 순서) - sortType 없을 때 기본값
+        - ASC(들어온 순서)
+    - 권한 검증 X, 모든 접속자에게 공개
+
+3. **특정 답변 조회(공유 등)**
     - `GET /answers/{answerId}`
 
 #### 알림
@@ -157,8 +158,8 @@ V1에서는 최소 기능을 구현합니다.
 Kafka, Redis pub/sub, SSE 구현
 
 1. 알림 내역 확인
-    - `GET /users/{userId}/notifications`
-    - JWT Authorization 후 유효성 통과 시 조회
+    - `GET /notifications`
+    - JWT Authorization 후 유효성 통과 시 해당 로그인 유저 정보로 조회
 
 #### 검색
 
