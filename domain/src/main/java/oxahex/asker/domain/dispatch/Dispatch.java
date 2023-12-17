@@ -29,7 +29,7 @@ public class Dispatch {
   private Long id;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ask_id")
+  @JoinColumn(name = "ask_id", nullable = false)
   private Ask ask;
 
   @ManyToOne(fetch = FetchType.LAZY)
