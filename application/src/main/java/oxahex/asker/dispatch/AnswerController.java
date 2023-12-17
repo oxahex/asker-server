@@ -1,8 +1,10 @@
 package oxahex.asker.dispatch;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import oxahex.asker.dispatch.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.dispatch.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.common.ResponseDto;
+import oxahex.asker.search.AnswerDocument;
+import oxahex.asker.search.SearchService;
 
 @Slf4j
 @RestController
@@ -30,6 +34,7 @@ public class AnswerController {
 
   private final DispatchService dispatchService;
   private final AnswerService answerService;
+  private final SearchService searchService;
 
   @PostMapping
   @PreAuthorize("hasAuthority('USER')")
@@ -71,5 +76,22 @@ public class AnswerController {
     AnswerListDto postedAnswers = answerService.getAnswers(userId, pageRequest);
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", postedAnswers));
+  }
+
+  @GetMapping("/search")
+  @PreAuthorize("permitAll()")
+  public ResponseEntity<?> searchAnswers(
+      @RequestParam String keyword,
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "10") Integer size
+  ) {
+
+    log.info("[답변 검색] keyword={}", keyword);
+    PageRequest pageRequest = PageRequest.of(page, size);
+
+    List<AnswerDocument> answerDocuments =
+        answerService.searchAnswers(keyword, pageRequest);
+
+    return ResponseEntity.ok(new ResponseDto<>(200, "", answerDocuments));
   }
 }
