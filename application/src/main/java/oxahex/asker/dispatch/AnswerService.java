@@ -50,8 +50,7 @@ public class AnswerService {
 
   public List<AnswerDocument> searchAnswers(String keyword, PageRequest pageRequest) {
 
-    SearchResponse<AnswerDocument> searchResponse =
-        searchService.searchAnswers(keyword, pageRequest);
+    return searchService.searchAnswers(keyword, pageRequest);
 
   }
 }

@@ -27,7 +27,7 @@ import oxahex.asker.domain.ask.Ask;
 public class AnswerDocument {
 
   @Id
-  private Long id;  // 답변 ID
+  private Long id;  // 질문 ID
 
   private String ask;
   private String answer;
@@ -38,7 +38,7 @@ public class AnswerDocument {
   ) {
 
     return AnswerDocument.builder()
-        .id(answer.getId())
+        .id(ask.getId())
         .ask(ask.getContents())
         .answer(answer.getContents())
         .build();

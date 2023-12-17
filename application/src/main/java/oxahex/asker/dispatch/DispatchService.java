@@ -22,8 +22,6 @@ import oxahex.asker.domain.user.User;
 import oxahex.asker.domain.user.UserDomainService;
 import oxahex.asker.error.exception.ServiceException;
 import oxahex.asker.error.type.ServiceError;
-import oxahex.asker.search.AnswerDocument;
-import oxahex.asker.search.SearchRepository;
 import oxahex.asker.search.SearchService;
 
 @Slf4j

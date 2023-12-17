@@ -1,6 +1,7 @@
 package oxahex.asker.dispatch;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import oxahex.asker.dispatch.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.domain.condition.SortType;
 import oxahex.asker.common.ResponseDto;
 import oxahex.asker.search.AnswerDocument;
+import oxahex.asker.search.SearchService;
 
 @Slf4j
 @RestController
@@ -32,6 +34,7 @@ public class AnswerController {
 
   private final DispatchService dispatchService;
   private final AnswerService answerService;
+  private final SearchService searchService;
 
   @PostMapping
   @PreAuthorize("hasAuthority('USER')")
@@ -86,10 +89,8 @@ public class AnswerController {
     log.info("[답변 검색] keyword={}", keyword);
     PageRequest pageRequest = PageRequest.of(page, size);
 
-    Page<AnswerDocument> answerDocuments =
+    List<AnswerDocument> answerDocuments =
         answerService.searchAnswers(keyword, pageRequest);
-
-    log.info("[답변 검색 결과] result={}", answerDocuments.get());
 
     return ResponseEntity.ok(new ResponseDto<>(200, "", answerDocuments));
   }
