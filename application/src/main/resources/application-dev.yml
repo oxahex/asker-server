@@ -26,6 +26,10 @@ spring:
       host: localhost
       port: 6380
 
+  elasticsearch:
+    uris: "http://localhost:9200"
+    
+
 
 logging:
   level:
