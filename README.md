@@ -241,4 +241,4 @@ Kafka, Redis pub/sub, SSE 구현
 - Redis Pub/Sub + SSE
 - EC2 배포
 
-이 부분은 꼭 끝까지 구혀
+이 부분은 계속 공부해 나가면서 추가해보려고 합니다. 감사합니다!
